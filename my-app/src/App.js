@@ -3,7 +3,7 @@ import logo from "./logo.svg";
 import "./App.css";
 import axios from "axios";
 function App() {
-	axios.get("http://77.68.118.54/users").then((res) => {
+	axios.get("http://77.68.118.54/api/users").then((res) => {
 		console.log(res);
 	});
 
