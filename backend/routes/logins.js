@@ -19,6 +19,7 @@ router
 		const d = new Date().toISOString().slice(0, 19).replace("T", " ");
 		db.pool.getConnection(function (err, connection) {
 			if (err) console.log(err);
+			console.log(insertLog(req, d));
 			connection.query(insertLog(req, d), function (error, results, fields) {
 				console.log(updateUserLogin(req));
 				connection.query(updateUserLogin(req), function (err, resu, fi) {
@@ -38,7 +39,8 @@ const selectAll = () => {
 	return "SELECT * from logins";
 };
 const insertLog = (req, d) => {
-	return `INSERT INTO logins (email, time, type) VALUES ('${req.body.email.name}', '${d}', '${req.body.type}')`;
+	console.log(req.body.email.email);
+	return `INSERT INTO logins (email, time, type) VALUES ('${req.body.email.email}', '${d}', '${req.body.type}')`;
 };
 
 const updateUserLogin = (req) => {
