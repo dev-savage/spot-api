@@ -29,7 +29,7 @@ app.use(
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use("/users", users);
+app.use("/api/users", users);
 app.use("/albums", albums);
 app.use("/logins", logins);
 app.use("/plays", plays);
