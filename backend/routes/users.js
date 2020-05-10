@@ -6,6 +6,7 @@ const db = require("../utils/database");
 router
 	.get("/", (req, res, next) => {
 		db.pool.getConnection(function (err, connection) {
+			if (err) console.log(err);
 			connection.query(selectAllUsers(), function (error, results, fields) {
 				if (error) throw error;
 				connection.release();
@@ -15,6 +16,7 @@ router
 	})
 	.post("/", (req, res, next) => {
 		db.pool.query(insertUser(req), (err, results, fields) => {
+			if (err) console.log(err);
 			if (err) {
 				res.send("Error inserting user");
 			} else {
