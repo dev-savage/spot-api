@@ -17,7 +17,7 @@ const TadhgTable = () => {
 	const [users, setUsers] = useState(null);
 	useEffect(() => {
 		console.log("in here");
-		fetch("http://localhost:3000/users")
+		fetch("http://77.68.118.54/users")
 			.then((response) => response.json())
 			.then((data) => {
 				setUsers(data);

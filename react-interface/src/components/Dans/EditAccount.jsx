@@ -29,7 +29,7 @@ const EditAccountModal = ({ email, handleClose }) => {
 		setInput(false);
 		setLoading(true);
 		axios
-			.put(`http://localhost:3000/users/${email}`, {
+			.put(`http://77.68.118.54/users/${email}`, {
 				password: pass,
 			})
 			.then((res) => {

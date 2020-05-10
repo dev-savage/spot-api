@@ -26,7 +26,7 @@ const TrashAccountModal = ({ email, handleClose }) => {
 		setInput(false);
 		setLoading(true);
 		axios
-			.delete(`http://localhost:3000/users/${email}`, {
+			.delete(`http://77.68.118.54/users/${email}`, {
 				password: pass,
 			})
 			.then((res) => {

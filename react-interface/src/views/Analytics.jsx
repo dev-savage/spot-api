@@ -35,11 +35,11 @@ const AlbumChart = () => {
 	const [months, setMonths] = useState(null);
 	const [overallStat, setOverallStat] = useState(null);
 	useEffect(() => {
-		axios.get("http://localhost:3000/plays").then((results) => {
+		axios.get("http://77.68.118.54/plays").then((results) => {
 			const bar = getBarChart(results.data);
 			setOverallStat(getTotalDailyPlays(results.data));
 			setBc(bar);
-			axios.get("http://localhost:3000/plays/month").then((results) => {
+			axios.get("http://77.68.118.54/plays/month").then((results) => {
 				setMonths(results.data);
 			});
 		});

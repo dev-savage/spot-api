@@ -27,7 +27,7 @@ const Albums = () => {
 	const [count, setCount] = useState(0);
 	const [email, setEmail] = useState(null);
 	useEffect(() => {
-		axios.get("http://localhost:3000/albums").then((data) => {
+		axios.get("http://77.68.118.54/albums").then((data) => {
 			setUsers(data.data);
 		});
 	}, [count]);

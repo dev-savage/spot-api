@@ -33,7 +33,7 @@ const AddAccountModal = ({ handleClose }) => {
 		setInput(false);
 		setLoading(true);
 		axios
-			.post("http://localhost:3000/users", {
+			.post("http://77.68.118.54/users", {
 				email: email,
 				password: pass,
 			})

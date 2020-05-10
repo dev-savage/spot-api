@@ -38,7 +38,7 @@ const AddAlbumModal = ({ handleClose }) => {
 		setInput(false);
 		setLoading(true);
 		axios
-			.post("http://localhost:3000/albums", {
+			.post("http://77.68.118.54/albums", {
 				name: name,
 				artist: artist,
 				url: url,
