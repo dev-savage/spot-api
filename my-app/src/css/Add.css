@@ -1,0 +1,54 @@
+.add-btn:hover {
+	cursor: pointer;
+}
+
+.btn-padd {
+	padding: 0em 0em 0em 1em;
+}
+
+.add__account__modal {
+	z-index: 10;
+	position: fixed;
+	padding: 5em 5em 10em 20em;
+	width: 65em;
+}
+
+.content__modal {
+	/* border-radius: 5px !important;
+	border-style: solid !important;
+	border-color: white !important; */
+}
+
+.modal__heading {
+	background-color: #1d8cf8 !important;
+}
+
+.modal__content {
+	background-color: white;
+}
+
+.subtitle__modal {
+	color: #1d8cf8 !important;
+}
+
+.input--style {
+	padding: 1em 1em;
+}
+
+.button-add {
+	padding-right: 1em;
+}
+
+.card {
+	border: none !important;
+}
+
+.submit-button {
+	background: linear-gradient(#64e6bb, #9198e5) !important;
+	border: none !important;
+}
+.cancel-button {
+	margin-left: 0.6em;
+	background: linear-gradient(#e66465, #9198e5) !important;
+	border: none !important;
+}
