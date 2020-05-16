@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import DataTable, { createTheme } from "react-data-table-component";
 import { Card, CardHeader, CardBody, CardTitle, Row } from "reactstrap";
 import fontawesome from "@fortawesome/fontawesome";
@@ -12,6 +12,7 @@ import "../css/Card.css";
 import DeleteAlbum from "../components/DeleteAlbum";
 import AddAlbum from "../components/AddAlbum";
 import EditAlbum from "../components/EditAlbum";
+import axios from "axios";
 fontawesome.library.add(faPlus, faTrashAlt, faPencilAlt, faFileExcel);
 
 createTheme("solarized", {
@@ -36,7 +37,7 @@ createTheme("solarized", {
 	},
 });
 const columns = [
-	{ name: "id", selector: "idalbum", sortable: true },
+	{ name: "id", selector: "idalbums", sortable: true },
 	{
 		name: "Name",
 		selector: "name",
@@ -59,7 +60,8 @@ const Albums = () => {
 	const [edit, setEdit] = useState(false);
 	const [del, setDel] = useState(false);
 	const [selectedA, setSelectedA] = useState(null);
-
+	const [count, setCount] = useState(0);
+	const [albums, setAlbums] = useState(null);
 	const handleSelect = (e) => {
 		setSelectedA(e.selectedRows);
 	};
@@ -106,102 +108,19 @@ const Albums = () => {
 	const onExport = () => {
 		downloadCSV(albums);
 	};
-	const albums = [
-		{
-			idalbum: 1,
-			name: "angelahennesy@one-email.net",
-			url: "Budweiser1!Budweiser1!Budweiser1!",
-			artist: 1,
-		},
-		{
-			idalbum: 2,
-			name: "angelahennesy@one-email.net",
-			url: "Budweiser1!Budweiser1!Budweiser1!",
-			artist: 1,
-		},
-		{
-			idalbum: 3,
-			name: "angelahennesy@one-email.net",
-			url: "Budweiser1!Budweiser1!Budweiser1!",
-			artist: 1,
-		},
-		{
-			idalbum: 4,
-			name: "angelahennesy@one-email.net",
-			url: "Budweiser1!Budweiser1!Budweiser1!",
-			artist: 1,
-		},
-		{
-			idalbum: 5,
-			name: "angelahennesy@one-email.net",
-			url: "Budweiser1!Budweiser1!Budweiser1!",
-			artist: 1,
-		},
-		{
-			idalbum: 30,
-			name: "angelahennesy@one-email.net",
-			url: "Budweiser1!Budweiser1!Budweiser1!",
-			artist: 1,
-		},
-		{
-			idalbum: 30,
-			name: "angelahennesy@one-email.net",
-			url: "Budweiser1!Budweiser1!Budweiser1!",
-			artist: 1,
-		},
-		{
-			idalbum: 30,
-			name: "angelahennesy@one-email.net",
-			url: "Budweiser1!Budweiser1!Budweiser1!",
-			artist: 1,
-		},
-		{
-			idalbum: 30,
-			name: "angelahennesy@one-email.net",
-			url: "Budweiser1!Budweiser1!Budweiser1!",
-			artist: 1,
-		},
-		{
-			idalbum: 30,
-			name: "angelahennesy@one-email.net",
-			url: "Budweiser1!Budweiser1!Budweiser1!",
-			artist: 1,
-		},
-		{
-			idalbum: 30,
-			name: "angelahennesy@one-email.net",
-			url: "Budweiser1!Budweiser1!Budweiser1!",
-			artist: 1,
-		},
-		{
-			idalbum: 30,
-			name: "angelahennesy@one-email.net",
-			url: "Budweiser1!Budweiser1!Budweiser1!",
-			artist: 5,
-		},
-		{
-			idalbum: 30,
-			name: "angelahennesy@one-email.net",
-			url: "Budweiser1!Budweiser1!Budweiser1!",
-			artist: 0,
-		},
-		{
-			idalbum: 30,
-			name: "angelahennesy@one-email.net",
-			url: "Budweiser1!Budweiser1!Budweiser1!",
-			artist: 3,
-		},
-		{
-			idalbum: 30,
-			name: "angelahennesy@one-email.net",
-			url: "Budweiser1!Budweiser1!Budweiser1!",
-			artist: 2,
-		},
-	];
+	useEffect(() => {
+		axios.get("http://77.68.118.54/api/albums").then((data) => {
+			console.log(data.data);
+			setAlbums(data.data);
+		});
+	}, [count]);
+
 	const close = () => {
 		setAdd(false);
 		setEdit(false);
 		setDel(false);
+		let c = count + 1;
+		setCount(c);
 	};
 	const openAdd = () => {
 		setAdd(true);
@@ -241,22 +160,26 @@ const Albums = () => {
 							</div>
 						</CardHeader>
 						<CardBody>
-							<DataTable
-								title=""
-								columns={columns}
-								data={albums}
-								defaultSortField="id"
-								selectableRows={true}
-								// selected={handleSelect}
-								onSelectedRowsChange={handleSelect}
-								pagination={true}
-								pointerOnHover={true}
-								dense={true}
-								noTableHead={false}
-								fixedHeader={true}
-								fixedHeaderScrollHeight="300px"
-								theme="solarized"
-							/>
+							{albums ? (
+								<DataTable
+									title=""
+									columns={columns}
+									data={albums}
+									defaultSortField="id"
+									selectableRows={true}
+									// selected={handleSelect}
+									onSelectedRowsChange={handleSelect}
+									pagination={true}
+									pointerOnHover={true}
+									dense={true}
+									noTableHead={false}
+									fixedHeader={true}
+									fixedHeaderScrollHeight="300px"
+									theme="solarized"
+								/>
+							) : (
+								<h4> Loading... </h4>
+							)}
 						</CardBody>
 					</Card>
 				</div>

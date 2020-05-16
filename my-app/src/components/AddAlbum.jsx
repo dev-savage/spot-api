@@ -8,7 +8,6 @@ import {
 	CardBody,
 	CardTitle,
 	Input,
-	InputGroup,
 } from "reactstrap";
 import fontawesome from "@fortawesome/fontawesome";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -19,6 +18,7 @@ const AddAlbumModal = ({ handleClose }) => {
 	const [name, setName] = useState(null);
 	const [artist, setArtist] = useState(null);
 	const [url, setUrl] = useState(null);
+	const [error, setError] = useState(null);
 
 	const [loading, setLoading] = useState(false);
 	const [done, setDone] = useState(false);
@@ -42,15 +42,18 @@ const AddAlbumModal = ({ handleClose }) => {
 		setInput(false);
 		setLoading(true);
 		axios
-			.post("http://77.68.118.54/albums", {
+			.post("http://77.68.118.54/api/albums", {
 				name: name,
 				artist: artist,
 				url: url,
 			})
 			.then((res) => {
-				console.log(res);
 				setLoading(false);
 				setDone(true);
+			})
+			.catch((e) => {
+				setLoading(false);
+				setError(e);
 			});
 	};
 	const headerStyle = {
@@ -70,6 +73,7 @@ const AddAlbumModal = ({ handleClose }) => {
 				<CardBody className="modal__content">
 					{done && <h4 className="subtitle__modal">Saved New Album</h4>}
 					{loading && <h4 className="subtitle__modal">Loading</h4>}
+					{error && <h4 className="subtitle__modal">Error: {error}</h4>}
 					{input && (
 						<div className="input--style">
 							<h6 className="subtitle__modal">New Album Details</h6>

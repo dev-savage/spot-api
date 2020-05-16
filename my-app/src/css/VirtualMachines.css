@@ -1,0 +1,13 @@
+.override--padding--d {
+	padding: 5.8em 2em 0em 2em !important;
+}
+
+.vm--container {
+	display: flex;
+	padding: 5.8em 0em 0em 23em;
+}
+
+.vm--card {
+	width: 30% !important;
+	margin: 0 1em 0 1em;
+}

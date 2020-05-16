@@ -9,9 +9,9 @@ import {
 	faFileExcel,
 } from "@fortawesome/free-solid-svg-icons";
 import "../css/Card.css";
-import DeleteAlbum from "../components/DeleteAlbum";
-import AddAlbum from "../components/AddAlbum";
-import EditAlbum from "../components/EditAlbum";
+import DeleteUser from "../components/DeleteUser";
+import AddUser from "../components/AddUser";
+import EditUser from "../components/EditUser";
 import axios from "axios";
 
 fontawesome.library.add(faPlus, faTrashAlt, faPencilAlt, faFileExcel);
@@ -68,7 +68,7 @@ const Users = () => {
 	const [selectedA, setSelectedA] = useState(null);
 	const [users, setUsers] = useState(null);
 	const [error, setError] = useState(null);
-
+	const [keyUpdate, setKeyUpdate] = useState(0);
 	useEffect(() => {
 		axios
 			.get("http://77.68.118.54/api/users")
@@ -78,7 +78,8 @@ const Users = () => {
 			.catch((e) => {
 				setError(e);
 			});
-	}, []);
+	}, [keyUpdate]);
+
 	function convertArrayOfObjectsToCSV(array) {
 		let result;
 
@@ -127,14 +128,16 @@ const Users = () => {
 		setAdd(false);
 		setEdit(false);
 		setDel(false);
+		let k = keyUpdate + 1;
+		setKeyUpdate(k);
 	};
 	return (
 		<div className="content">
 			<Row>
 				<div className="col-12 my--card">
-					{add && <AddAlbum handleClose={close} />}
-					{edit && <EditAlbum handleClose={close} selectedA={selectedA} />}
-					{del && <DeleteAlbum handleClose={close} selectedA={selectedA} />}
+					{add && <AddUser handleClose={close} />}
+					{edit && <EditUser handleClose={close} selectedA={selectedA} />}
+					{del && <DeleteUser handleClose={close} selectedA={selectedA} />}
 					<Card className="my--card--stuff">
 						<CardHeader>
 							<CardTitle tag="h4">Users</CardTitle>

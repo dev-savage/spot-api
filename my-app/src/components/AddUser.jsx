@@ -14,15 +14,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 fontawesome.library.add(faTimes);
 
-const AddAlbumModal = ({ handleClose, selectedA }) => {
-	const [name, setName] = useState(selectedA[0].name);
-	const [artist, setArtist] = useState(selectedA[0].artist);
-	const [url, setUrl] = useState(selectedA[0].url);
+const AddUserModal = ({ handleClose }) => {
+	const [name, setName] = useState(null);
+	const [password, setPassword] = useState(null);
 
 	const [loading, setLoading] = useState(false);
 	const [done, setDone] = useState(false);
 	const [input, setInput] = useState(true);
-
+	const [error, setError] = useState(null);
 	const close = () => {
 		setDone(false);
 		setInput(true);
@@ -32,24 +31,23 @@ const AddAlbumModal = ({ handleClose, selectedA }) => {
 		setName(e.target.value);
 	};
 	const handleArtist = (e) => {
-		setArtist(e.target.value);
-	};
-	const handleUrl = (e) => {
-		setUrl(e.target.value);
+		setPassword(e.target.value);
 	};
 	const handleSubmit = () => {
 		setInput(false);
 		setLoading(true);
 		axios
-			.post("http://77.68.118.54/albums", {
-				name: name,
-				artist: artist,
-				url: url,
+			.post("http://77.68.118.54/api/users", {
+				email: name,
+				password: password,
 			})
 			.then((res) => {
-				console.log(res);
 				setLoading(false);
 				setDone(true);
+			})
+			.catch((e) => {
+				setLoading(false);
+				setError(e);
 			});
 	};
 	const headerStyle = {
@@ -62,19 +60,20 @@ const AddAlbumModal = ({ handleClose, selectedA }) => {
 			<Card className="content__modal">
 				<CardHeader className="modal__heading">
 					<div style={headerStyle}>
-						<CardTitle tag="h5">Edit Album</CardTitle>
+						<CardTitle tag="h5">Add User Account</CardTitle>
 						<FontAwesomeIcon onClick={close} icon="times" className="ai-pads" />
 					</div>
 				</CardHeader>
 				<CardBody className="modal__content">
-					{done && <h4 className="subtitle__modal">Saved New Album</h4>}
+					{done && <h4 className="subtitle__modal">Saved New User</h4>}
 					{loading && <h4 className="subtitle__modal">Loading</h4>}
+					{error && <h4 className="subtitle__modal"> {error}</h4>}
 					{input && (
 						<div className="input--style">
-							<h6 className="subtitle__modal">Current Album Details</h6>
+							<h6 className="subtitle__modal">New User Details</h6>
 							<Input
 								id="inEmail"
-								placeholder={name}
+								placeholder="Name"
 								className="subtitle__modal"
 								type="text"
 								onChange={handleName}
@@ -82,18 +81,10 @@ const AddAlbumModal = ({ handleClose, selectedA }) => {
 							<br />
 							<Input
 								id="inPass"
-								placeholder={artist}
+								placeholder="Password"
 								type="text"
 								className="subtitle__modal"
 								onChange={handleArtist}
-							/>
-							<br />
-							<Input
-								id="inPass"
-								placeholder={url}
-								type="text"
-								className="subtitle__modal"
-								onChange={handleUrl}
 							/>
 							<hr />
 							<div>
@@ -102,7 +93,7 @@ const AddAlbumModal = ({ handleClose, selectedA }) => {
 									color="success"
 									onClick={handleSubmit}
 								>
-									Update
+									Submit
 								</Button>
 								<Button color="warning cancel-button" onClick={close}>
 									Cancel
@@ -116,4 +107,4 @@ const AddAlbumModal = ({ handleClose, selectedA }) => {
 	);
 };
 
-export default AddAlbumModal;
+export default AddUserModal;

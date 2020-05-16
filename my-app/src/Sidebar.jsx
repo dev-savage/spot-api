@@ -9,8 +9,17 @@ import {
 	faChartLine,
 	faUsers,
 	faCircle,
+	faDesktop,
+	faBell,
 } from "@fortawesome/free-solid-svg-icons";
-fontawesome.library.add(faMusic, faChartLine, faUsers, faCircle);
+fontawesome.library.add(
+	faMusic,
+	faChartLine,
+	faUsers,
+	faCircle,
+	faDesktop,
+	faBell
+);
 
 function Sidebar() {
 	const [page, setPage] = useState("dashboard");
@@ -19,11 +28,7 @@ function Sidebar() {
 		return page === type;
 	};
 	const setActive = (type) => {
-		console.log("here");
 		setPage(type);
-		console.log(type);
-		console.log(page);
-		console.log(isActive(type));
 		const key1 = key + 1;
 		setKey(key1);
 	};
@@ -89,6 +94,44 @@ function Sidebar() {
 								<div className="align--center">
 									<i className="fa fa-music my--icon"></i>
 									<div>Albums</div>
+								</div>
+							</div>
+						</NavLink>
+					</li>
+					<li className="db" onClick={() => setActive("vms")}>
+						<NavLink
+							to="/vms"
+							className="nav-link sb__element"
+							activeClassName="active"
+						>
+							<div key={key} className="icon-all">
+								{isActive("vms") ? (
+									<i className="fa fa-circle fa-sm my--icon"></i>
+								) : (
+									<i className="fa fa-circle fa-sm my--icon hide"></i>
+								)}
+								<div className="align--center">
+									<i className="fa fa-desktop my--icon"></i>
+									<div>Virtual Machines</div>
+								</div>
+							</div>
+						</NavLink>
+					</li>
+					<li className="db" onClick={() => setActive("notifications")}>
+						<NavLink
+							to="/notifications"
+							className="nav-link sb__element"
+							activeClassName="active"
+						>
+							<div key={key} className="icon-all">
+								{isActive("notifications") ? (
+									<i className="fa fa-circle fa-sm my--icon"></i>
+								) : (
+									<i className="fa fa-circle fa-sm my--icon hide"></i>
+								)}
+								<div className="align--center">
+									<i className="fa fa-bell my--icon"></i>
+									<div>Notifications</div>
 								</div>
 							</div>
 						</NavLink>

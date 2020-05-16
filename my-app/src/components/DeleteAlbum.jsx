@@ -1,55 +1,37 @@
 import React, { useState } from "react";
 import "../css/Add.css";
 import axios from "axios";
-import {
-	Card,
-	Button,
-	CardHeader,
-	CardBody,
-	CardTitle,
-	Input,
-} from "reactstrap";
+import { Card, Button, CardHeader, CardBody, CardTitle } from "reactstrap";
 import fontawesome from "@fortawesome/fontawesome";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 fontawesome.library.add(faTimes);
 
-const AddAlbumModal = ({ handleClose, selectedA }) => {
-	const [name, setName] = useState(selectedA[0].name);
-	const [artist, setArtist] = useState(selectedA[0].artist);
-	const [url, setUrl] = useState(selectedA[0].url);
+const DeleteAlbumModal = ({ handleClose, selectedA }) => {
+	const name = selectedA[0].name;
+	const artist = selectedA[0].artist;
+	const url = selectedA[0].url;
 
 	const [loading, setLoading] = useState(false);
 	const [done, setDone] = useState(false);
 	const [input, setInput] = useState(true);
-
+	const [error, setError] = useState(null);
 	const close = () => {
 		setDone(false);
 		setInput(true);
 		handleClose();
 	};
-	const handleName = (e) => {
-		setName(e.target.value);
-	};
-	const handleArtist = (e) => {
-		setArtist(e.target.value);
-	};
-	const handleUrl = (e) => {
-		setUrl(e.target.value);
-	};
 	const handleSubmit = () => {
 		setInput(false);
 		setLoading(true);
 		axios
-			.post("http://77.68.118.54/albums", {
-				name: name,
-				artist: artist,
-				url: url,
-			})
+			.delete(`http://77.68.118.54/api/albums/${name}`)
 			.then((res) => {
-				console.log(res);
 				setLoading(false);
 				setDone(true);
+			})
+			.catch((e) => {
+				setError(e);
 			});
 	};
 	const headerStyle = {
@@ -67,8 +49,10 @@ const AddAlbumModal = ({ handleClose, selectedA }) => {
 					</div>
 				</CardHeader>
 				<CardBody className="modal__content">
-					{done && <h4 className="subtitle__modal">Saved New Album</h4>}
+					{done && <h4 className="subtitle__modal">Deleted Album</h4>}
 					{loading && <h4 className="subtitle__modal">Loading</h4>}
+					{error && <h4 className="subtitle__modal">Error! {error}</h4>}
+
 					{input && (
 						<div className="input--style">
 							<h6 className="subtitle__modal">Confirm Deletion</h6>
@@ -96,4 +80,4 @@ const AddAlbumModal = ({ handleClose, selectedA }) => {
 	);
 };
 
-export default AddAlbumModal;
+export default DeleteAlbumModal;
