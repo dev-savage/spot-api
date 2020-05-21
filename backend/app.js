@@ -10,6 +10,7 @@ var users = require("./routes/users");
 var albums = require("./routes/albums");
 var logins = require("./routes/logins");
 var plays = require("./routes/plays");
+var virtualmachines = require("./routes/virtualmachines");
 var app = express();
 app.use(cors());
 // view engine setup
@@ -33,6 +34,7 @@ app.use("/api/users", users);
 app.use("/api/albums", albums);
 app.use("/api/logins", logins);
 app.use("/api/plays", plays);
+app.use("/api/virtualmachines", virtualmachines);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

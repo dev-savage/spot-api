@@ -62,7 +62,14 @@ const asyncForEach = async (array, callback) => {
 	}
 };
 const start = async () => {
-	const user = await db.randomFreeUser();
+	let user;
+	try {
+		user = await db.randomFreeUser();
+	} catch (e) {
+		console.log("failed to get user");
+		console.log(e);
+	}
+
 	await main(user);
 	start();
 };
