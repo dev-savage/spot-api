@@ -1,8 +1,9 @@
 const axios = require("axios");
-
+const config = require("../config");
+const ep = config.hostname();
 const login = (user) => {
 	axios
-		.post("http://localhost:3000/logins", {
+		.post(`${ep}/api/logins`, {
 			email: user,
 			type: 1,
 		})
@@ -13,7 +14,7 @@ const login = (user) => {
 
 const logout = (user) => {
 	axios
-		.post("http://localhost:3000/logins", {
+		.post(`${ep}/api/logins`, {
 			email: user,
 			type: 0,
 		})

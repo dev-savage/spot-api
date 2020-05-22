@@ -6,10 +6,20 @@ const db = require("./db.js");
 const randomTime = (max, min) => Math.floor(Math.random() * max + min);
 const waitFor = (ms) => new Promise((r) => setTimeout(r, ms));
 
+const alwas = () => {
+	throw "oops";
+};
 async function main(user) {
 	const options = setOptions();
 	let driver = await createDriver(options);
 	try {
+		await waitFor(1000);
+		try {
+			alwas();
+		} catch (e) {
+			throw "attempt";
+		}
+
 		await openSite(driver);
 		console.log("Opened Spotify!");
 		await waitFor(randomTime(5500, 2500));
@@ -17,7 +27,14 @@ async function main(user) {
 		await openLoginScreen(driver);
 		await waitFor(randomTime(5500, 2500));
 
-		await login(driver, user);
+		try {
+			await login(driver, user);
+		} catch (e) {
+			console.log("couldt login");
+			console.log(user);
+			throw "login didnt work";
+		}
+
 		LOGIN_TIME = getTime();
 		log.login(user);
 		console.log("Logged in @ " + LOGIN_TIME);

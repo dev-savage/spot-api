@@ -56,7 +56,6 @@ router.get("/barchart/:type/:time", function (req, res, next) {
 	const type = req.params.type; // artist or album
 	const time = req.params.time; // current year, current month, current week, last 7 days
 	const sql = determineSQL(type, time);
-	console.log(sql);
 	db.pool.getConnection(function (err, conn) {
 		if (err) console.log(err);
 		query(conn, sql)
@@ -118,7 +117,7 @@ router
 			) {
 				if (error) console.log(error);
 				if (results.affectedRows != 1) {
-					connection.query(insertNewDayForPlay(album, d), function (
+					connection.query(insertNewDayForPlay(album, artist, d), function (
 						error,
 						results,
 						fields
@@ -315,13 +314,13 @@ const selectPlays = (req) => {
 	return `select * from plays where album='${req.params.album}'`;
 };
 
-const insertNewDayForPlay = (album, d) => {
+const insertNewDayForPlay = (album, artist, d) => {
 	count = 0;
-	return `insert into plays (album, count, date) values ('${album}', '${count}', '${d}')`;
+	return `insert into plays (album, artist, count, date) values ('${album}', ${artist}, '${count}', '${d}')`;
 };
 
 const selectDayForPlay = (album, d) => {
-	return `UPDATE plays SET count = count + 1 where album='${album}' and date='${d}'`;
+	return `UPDATE plays SET count = count + 1 where album='${album}' and date_of_play='${d}'`;
 };
 
 const selectGivenMonth = (month) => {
