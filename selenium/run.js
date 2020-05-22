@@ -21,6 +21,7 @@ async function main(user) {
 			const options = setOptions();
 			driver = await createDriver(options);
 		} catch (e) {
+			console.log(e);
 			console.log("fucked driver");
 		}
 		try {
