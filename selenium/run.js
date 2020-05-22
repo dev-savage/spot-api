@@ -3,71 +3,180 @@ const chrome = require("selenium-webdriver/chrome");
 const data = require("./data");
 const log = require("./logging");
 const db = require("./db.js");
+var os = require("os");
+var ifaces = os.networkInterfaces();
 const randomTime = (max, min) => Math.floor(Math.random() * max + min);
 const waitFor = (ms) => new Promise((r) => setTimeout(r, ms));
+const ip_getter = require("./ipaddress");
+const ipaddress = ip_getter.getAddress();
 
-const alwas = () => {
-	throw "oops";
+const tt = () => {
+	console.log;
+	throw "fsdkflndsklfnsd";
 };
 async function main(user) {
 	const options = setOptions();
 	let driver = await createDriver(options);
+	let ting = getAddress();
+
 	try {
-		await waitFor(1000);
 		try {
-			alwas();
+			tt();
 		} catch (e) {
-			throw "attempt";
+			throw {
+				reason: "Test reason",
+				ip: getAddress(),
+				user: { user: "email address", password: "the password" },
+				album: "www.spotify.cg",
+				description: e,
+			};
+		}
+		await waitFor(randomTime(5500, 2500));
+		try {
+			await openSite(driver);
+			await waitFor(randomTime(5500, 2500));
+			console.log("Opened Spotify!");
+		} catch (e) {
+			throw {
+				reason: "Failed to open Browser",
+				ip: ipaddress,
+				description: e,
+			};
 		}
 
-		await openSite(driver);
-		console.log("Opened Spotify!");
-		await waitFor(randomTime(5500, 2500));
-
-		await openLoginScreen(driver);
-		await waitFor(randomTime(5500, 2500));
+		try {
+			await openLoginScreen(driver);
+			await waitFor(randomTime(5500, 2500));
+		} catch (e) {
+			throw {
+				reason: "Failed to load login screen",
+				ip: ipaddress,
+				description: e,
+			};
+		}
 
 		try {
 			await login(driver, user);
 		} catch (e) {
-			console.log("couldt login");
-			console.log(user);
-			throw "login didnt work";
+			throw {
+				reason: "Failed login user",
+				ip: ipaddress,
+				description: e,
+				user: user,
+			};
 		}
 
-		LOGIN_TIME = getTime();
-		log.login(user);
-		console.log("Logged in @ " + LOGIN_TIME);
-		await waitFor(randomTime(5500, 3500));
+		try {
+			LOGIN_TIME = getTime();
+			log.login(user);
+			console.log("Logged in @ " + LOGIN_TIME);
+			await waitFor(randomTime(5500, 3500));
+		} catch (e) {
+			throw {
+				reason: "Failed log to database that user logged in",
+				ip: ipaddress,
+				description: e,
+				user: user,
+			};
+		}
 
-		const albumToPlay = await db.getRandomAlbum();
-		console.log("Playing: ", albumToPlay);
-		await openAlbum(driver, albumToPlay.url);
-		console.log("Opened Album Page");
-		await waitFor(randomTime(2000, 1000));
-		await playAlbum(driver);
-		console.log("Started Playing Album");
-		await waitFor(randomTime(2000, 1000));
+		let albumToPlay;
+		try {
+			albumToPlay = await db.getRandomAlbum();
+			console.log("Playing: ", albumToPlay);
+			await waitFor(randomTime(2000, 1000));
+		} catch (e) {
+			throw {
+				reason: "Failed to get random album from database",
+				ip: ipaddress,
+				description: e,
+				user: user,
+			};
+		}
 
-		await ensureShuffleOn(driver);
-		console.log("Turned Shuffle On");
-		await waitFor(randomTime(2000, 1000));
+		try {
+			await openAlbum(driver, albumToPlay.url);
+			console.log("Opened Album Page");
+		} catch (e) {
+			throw {
+				reason: "Failed to browse to album on spotify webplayer",
+				ip: ipaddress,
+				description: e,
+				user: user,
+				album: album.url,
+			};
+		}
 
-		await goToNextTrack(driver);
-		await waitFor(1000, 900);
+		try {
+			await playAlbum(driver);
+			console.log("Started Playing Album");
+			await waitFor(randomTime(2000, 1000));
+		} catch (e) {
+			throw {
+				reason: "Failed to start playing album",
+				ip: ipaddress,
+				description: e,
+				user: user,
+				album: album.url,
+			};
+		}
 
-		await playAlbumThrough(driver, albumToPlay);
+		try {
+			await ensureShuffleOn(driver);
+			console.log("Turned Shuffle On");
+			await waitFor(randomTime(2000, 1000));
+		} catch (e) {
+			throw {
+				reason: "Failed to click shuffle button",
+				ip: ipaddress,
+				description: e,
+				user: user,
+				album: album.url,
+			};
+		}
 
-		//!Log out stuff
-		await logout(driver);
+		try {
+			await goToNextTrack(driver);
+			await waitFor(1000, 900);
+		} catch (e) {
+			throw {
+				reason: "Failed to click next track button",
+				ip: ipaddress,
+				description: e,
+				user: user,
+				album: album.url,
+			};
+		}
+
+		try {
+			await playAlbumThrough(driver, albumToPlay);
+			console.log("letting album play");
+		} catch (e) {
+			throw {
+				reason: "Issue letting album shuffle play ",
+				ip: ipaddress,
+				description: e,
+				user: user,
+				album: album.url,
+			};
+		}
+
+		try {
+			await logout(driver);
+			log.logout(user);
+			console.log("logged out");
+		} catch (e) {
+			throw {
+				reason: "Issue logging user out ",
+				ip: ipaddress,
+				description: e,
+				user: user,
+				album: album.url,
+			};
+		}
 	} catch (e) {
-		console.log("Error!!");
-		console.log(e);
-		console.log(e.code);
-		console.log(e.description);
-		console.log(e.date);
+		await log.error(e);
 	} finally {
-		log.logout(user);
 		await waitFor(7000);
 		await driver.quit();
 	}
@@ -84,9 +193,7 @@ const start = async () => {
 		user = await db.randomFreeUser();
 	} catch (e) {
 		console.log("failed to get user");
-		console.log(e);
 	}
-
 	await main(user);
 	start();
 };
@@ -330,5 +437,30 @@ class CustomError extends Error {
 		this.date = getTime();
 	}
 }
+
+const getAddress = () => {
+	let arr = [];
+	Object.keys(ifaces).forEach(function (ifname) {
+		var alias = 0;
+
+		ifaces[ifname].forEach(function (iface) {
+			if ("IPv4" !== iface.family || iface.internal !== false) {
+				// skip over internal (i.e. 127.0.0.1) and non-ipv4 addresses
+				return;
+			}
+			if (alias >= 1) {
+				// this single interface has multiple ipv4 addresses
+				arr.push(iface.address);
+				return iface.address;
+			} else {
+				// this interface has only one ipv4 adress
+				arr.push(iface.address);
+				return iface.address;
+			}
+			++alias;
+		});
+	});
+	return arr[0];
+};
 
 module.exports = { start };

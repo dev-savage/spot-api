@@ -11,7 +11,6 @@ const randomFreeUser = () => {
 				resolve(user);
 			})
 			.catch((error) => {
-				console.log(error);
 				// Request made, and server responded
 				if (error.response) {
 					console.log(20);
@@ -39,7 +38,6 @@ const getRandomAlbum = () => {
 				resolve(result.data[0]);
 			})
 			.catch((e) => {
-				console.log(e);
 				reject(e);
 			});
 	});
@@ -57,7 +55,6 @@ const incrementAlbum = (album) => {
 				resolve();
 			})
 			.catch((e) => {
-				console.log(e);
 				reject(e);
 			});
 	});

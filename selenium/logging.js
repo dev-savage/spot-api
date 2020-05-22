@@ -9,6 +9,9 @@ const login = (user) => {
 		})
 		.then((res) => {
 			console.log("Logged login");
+		})
+		.catch((e) => {
+			throw e;
 		});
 };
 
@@ -20,7 +23,21 @@ const logout = (user) => {
 		})
 		.then((res) => {
 			console.log("Logged logout");
+		})
+		.catch((e) => {
+			throw e;
 		});
 };
 
-module.exports = { login, logout };
+const error = (e) => {
+	axios
+		.post(`${ep}/api/errors`, { error: e })
+		.then((res) => {
+			console.log(res.data);
+		})
+		.catch((e) => {
+			// console.log(e);
+			console.log("error logging error");
+		});
+};
+module.exports = { login, logout, error };
