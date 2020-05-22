@@ -316,7 +316,7 @@ const selectPlays = (req) => {
 
 const insertNewDayForPlay = (album, artist, d) => {
 	count = 0;
-	return `insert into plays (album, artist, count, date) values ('${album}', '${artist}', '${count}', '${d}')`;
+	return `insert into plays (album, artist, count, date_of_play) values ('${album}', '${artist}', '${count}', '${d}')`;
 };
 
 const selectDayForPlay = (album, d) => {
@@ -324,14 +324,14 @@ const selectDayForPlay = (album, d) => {
 };
 
 const selectGivenMonth = (month) => {
-	return `select * FROM spotify.plays where monthname(date)='${month}'`;
+	return `select * FROM spotify.plays where monthname(date_of_play)='${month}'`;
 };
 const selectLastWeek = () => {
-	return `SELECT * FROM spotify.plays where date between date_sub(now(),INTERVAL 1 WEEK) and now()`;
+	return `SELECT * FROM spotify.plays where date_of_play between date_sub(now(),INTERVAL 1 WEEK) and now()`;
 };
 
 const selectLastDay = () => {
-	return `SELECT * FROM spotify.plays WHERE date >= NOW() - INTERVAL 1 DAY`;
+	return `SELECT * FROM spotify.plays WHERE date_of_play >= NOW() - INTERVAL 1 DAY`;
 };
 
 module.exports = router;
