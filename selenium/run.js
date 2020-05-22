@@ -11,8 +11,8 @@ const ip_getter = require("./ipaddress");
 const ipaddress = ip_getter.getAddress();
 
 async function main(user) {
+	let driver;
 	try {
-		let driver;
 		try {
 			const options = setOptions();
 			driver = await createDriver(options);
@@ -20,17 +20,7 @@ async function main(user) {
 			console.log(e);
 			console.log("fucked driver");
 		}
-		try {
-			tt();
-		} catch (e) {
-			throw {
-				reason: "Test reason",
-				ip: getAddress(),
-				user: { user: "email address", password: "the password" },
-				album: "www.spotify.cg",
-				description: e,
-			};
-		}
+
 		await waitFor(randomTime(5500, 2500));
 		try {
 			await openSite(driver);
@@ -205,9 +195,9 @@ const setOptions = () => {
 	options.setUserPreferences({
 		"profile.default_content_setting_values.notifications": 2,
 	});
-	options.addArguments("--no-sandbox");
-	options.addArguments("-disable-dev-shm-usage");
-	options.addArguments("--headless");
+	// options.addArguments("--no-sandbox");
+	// options.addArguments("-disable-dev-shm-usage");
+	// options.addArguments("--headless");
 	return options;
 };
 const createDriver = (options) => {
