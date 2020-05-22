@@ -316,7 +316,7 @@ const selectPlays = (req) => {
 
 const insertNewDayForPlay = (album, artist, d) => {
 	count = 0;
-	return `insert into plays (album, artist, count, date) values ('${album}', ${artist}, '${count}', '${d}')`;
+	return `insert into plays (album, artist, count, date) values ('${album}', '${artist}', '${count}', '${d}')`;
 };
 
 const selectDayForPlay = (album, d) => {
