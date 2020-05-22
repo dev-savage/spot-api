@@ -10,15 +10,14 @@ const waitFor = (ms) => new Promise((r) => setTimeout(r, ms));
 const ip_getter = require("./ipaddress");
 const ipaddress = ip_getter.getAddress();
 
-const tt = () => {
-	console.log;
-	throw "fsdkflndsklfnsd";
-};
 async function main(user) {
 	try {
 		let driver;
 		try {
 			const options = setOptions();
+			options.add_argument("--headless");
+			options.add_argument("--no-sandbox");
+			options.add_argument("--disable-dev-shm-usage");
 			driver = await createDriver(options);
 		} catch (e) {
 			console.log(e);
