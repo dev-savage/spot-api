@@ -173,14 +173,15 @@ const BarCard = ({ resource }) => {
 	const [data, setData] = useState(null);
 	const [loading, setLoading] = useState(true);
 	const [time, setTime] = useState("WEEK");
-
+	const ep = "http://77.68.118.54/api/plays/barchart/";
+	console.log(ep);
 	useEffect(() => {
 		const fetchData = async () => {
 			setError(false);
 			setLoading(true);
 			setData(null);
 			axios
-				.get(`http://77.68.118.54/api/plays/barchart/${resource}/${time}`)
+				.get(`${ep}${resource}/${time}`)
 				.then((result) => {
 					setData(result.data);
 					setLoading(false);
