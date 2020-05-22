@@ -189,11 +189,14 @@ const asyncForEach = async (array, callback) => {
 };
 const start = async () => {
 	let user;
+	console.log("in start");
 	try {
 		user = await db.randomFreeUser();
 	} catch (e) {
 		console.log("failed to get user");
 	}
+	console.log("got user");
+	console.log(user);
 	await main(user);
 	start();
 };
