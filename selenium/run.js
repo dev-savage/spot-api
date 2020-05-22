@@ -15,11 +15,14 @@ const tt = () => {
 	throw "fsdkflndsklfnsd";
 };
 async function main(user) {
-	const options = setOptions();
-	let driver = await createDriver(options);
-	let ting = getAddress();
-
 	try {
+		let driver;
+		try {
+			const options = setOptions();
+			driver = await createDriver(options);
+		} catch (e) {
+			console.log("fucked driver");
+		}
 		try {
 			tt();
 		} catch (e) {
