@@ -197,7 +197,7 @@ const setOptions = () => {
 	});
 	options.addArguments("--no-sandbox");
 	options.addArguments("-disable-dev-shm-usage");
-	// options.addArguments("--headless");
+	options.addArguments("--headless");
 	return options;
 };
 const createDriver = (options) => {
