@@ -15,9 +15,6 @@ async function main(user) {
 		let driver;
 		try {
 			const options = setOptions();
-			options.add_argument("--headless");
-			options.add_argument("--no-sandbox");
-			options.add_argument("--disable-dev-shm-usage");
 			driver = await createDriver(options);
 		} catch (e) {
 			console.log(e);
@@ -208,9 +205,9 @@ const setOptions = () => {
 	options.setUserPreferences({
 		"profile.default_content_setting_values.notifications": 2,
 	});
-	// options.addArguments("--no-sandbox");
-	// options.addArguments("-disable-dev-shm-usage");
-	// options.addArguments("--headless");
+	options.addArguments("--no-sandbox");
+	options.addArguments("-disable-dev-shm-usage");
+	options.addArguments("--headless");
 	return options;
 };
 const createDriver = (options) => {
