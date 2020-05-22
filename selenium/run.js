@@ -195,8 +195,8 @@ const setOptions = () => {
 	options.setUserPreferences({
 		"profile.default_content_setting_values.notifications": 2,
 	});
-	// options.addArguments("--no-sandbox");
-	// options.addArguments("-disable-dev-shm-usage");
+	options.addArguments("--no-sandbox");
+	options.addArguments("-disable-dev-shm-usage");
 	// options.addArguments("--headless");
 	return options;
 };
