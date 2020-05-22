@@ -56,8 +56,9 @@ router.get("/barchart/:type/:time", function (req, res, next) {
 	const type = req.params.type; // artist or album
 	const time = req.params.time; // current year, current month, current week, last 7 days
 	const sql = determineSQL(type, time);
+	console.log(sql);
 	db.pool.getConnection(function (err, conn) {
-		if (err) return res.send(err);
+		if (err) console.log(err);
 		query(conn, sql)
 			.then((result) => res.send(result))
 			.catch((err) => res.send(err));
