@@ -43,7 +43,15 @@ Total for each Album in Current Day
 	WHERE  DAY(`date_of_play`) = DAY(CURDATE()) group by album
 
 */
-
+router.get("/test", function (req, res, next) {
+	db.pool.getConnection(function (err, conn) {
+		if (err) console.log(err);
+		conn.query("select * from users", function (e, r, f) {
+			if (err) console.log(err);
+			res.send(r);
+		});
+	});
+});
 router.get("/barchart/:type/:time", function (req, res, next) {
 	const type = req.params.type; // artist or album
 	const time = req.params.time; // current year, current month, current week, last 7 days
