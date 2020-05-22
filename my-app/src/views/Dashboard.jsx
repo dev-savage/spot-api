@@ -180,7 +180,7 @@ const BarCard = ({ resource }) => {
 			setLoading(true);
 			setData(null);
 			axios
-				.get(`http://localhost:3000/api/plays/barchart/${resource}/${time}`)
+				.get(`http://77.68.118.54//api/plays/barchart/${resource}/${time}`)
 				.then((result) => {
 					setData(result.data);
 					setLoading(false);
