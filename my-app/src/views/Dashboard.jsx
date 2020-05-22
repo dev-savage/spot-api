@@ -12,9 +12,10 @@ import {
 import "../css/Card.css";
 import { Bar, Line } from "react-chartjs-2";
 import "../css/Dashboard.css";
+import "../css/Dp.css";
 import { css } from "@emotion/core";
 import RingLoader from "react-spinners/RingLoader";
-// import axios from "axios";
+import axios from "axios";
 
 const override = css`
 	display: block;
@@ -136,6 +137,7 @@ const Dashboard = () => {
 									<CardTitle tag="h4">Overall Plays</CardTitle>
 								</Col>
 								<ControlButtons />
+								{/* <Datee /> */}
 							</Row>
 						</CardHeader>
 						<CardBody>
@@ -159,71 +161,286 @@ const Dashboard = () => {
 					</Card>
 				</div>
 			</Row>
-			<Row className="">
-				<div className="col-12 my--card override--padding">
-					<Card className="my--card--stuff">
-						<CardHeader>
-							<Row>
-								<Col className="text-left" sm="6">
-									<h5 className="card-category">Albums</h5>
-									<CardTitle tag="h4">Plays by Album</CardTitle>
-								</Col>
-								<ControlButtons />
-							</Row>
-						</CardHeader>
-						<CardBody>
-							{error ? (
-								<h3>Error {error}</h3>
-							) : bar ? (
-								<Bar
-									data={chartExample3.data}
-									options={chartExample3.options}
-								/>
-							) : (
-								<RingLoader
-									css={override}
-									size={90}
-									color={"#1d8cf8"}
-									loading={true}
-								/>
-							)}
-						</CardBody>
-					</Card>
-				</div>
-			</Row>
-			<Row className="">
-				<div className="col-12 my--card override--padding">
-					<Card className="my--card--stuff">
-						<CardHeader>
-							<Row>
-								<Col className="text-left" sm="6">
-									<h5 className="card-category">Artist</h5>
-									<CardTitle tag="h4">Plays by Artist</CardTitle>
-								</Col>
-								<ControlButtons />
-							</Row>
-						</CardHeader>
-						<CardBody>
-							{error ? (
-								<h3>Error {error}</h3>
-							) : bar ? (
-								<Bar
-									data={chartExample3.data}
-									options={chartExample3.options}
-								/>
-							) : (
-								<RingLoader
-									css={override}
-									size={90}
-									color={"#1d8cf8"}
-									loading={true}
-								/>
-							)}
-						</CardBody>
-					</Card>
-				</div>
-			</Row>
+			<BarCard resource={"artist"} />
+			<BarCard resource={"album"} />
 		</div>
+	);
+};
+
+const BarCard = ({ resource }) => {
+	const name = resource.charAt(0).toUpperCase() + resource.slice(1);
+	const [error, setError] = useState(false);
+	const [data, setData] = useState(null);
+	const [loading, setLoading] = useState(true);
+	const [time, setTime] = useState("WEEK");
+
+	useEffect(() => {
+		const fetchData = async () => {
+			setError(false);
+			setLoading(true);
+			setData(null);
+			axios
+				.get(`http://localhost:3000/api/plays/barchart/${resource}/${time}`)
+				.then((result) => {
+					setData(result.data);
+					setLoading(false);
+				})
+				.catch((error) => {
+					if (error.response) {
+						setError(error.response.status);
+					} else {
+						setError("Could not get Data");
+					}
+					setLoading(false);
+				});
+		};
+		fetchData();
+	}, [time]);
+
+	const handleTime = (update) => {
+		switch (update) {
+			case 0:
+				setTime("WEEK");
+				break;
+			case 1:
+				setTime("7DAYS");
+				break;
+			case 2:
+				setTime("MONTH");
+				break;
+			case 3:
+				setTime("YEAR");
+				break;
+			default:
+				setTime("WEEK");
+				break;
+		}
+	};
+	return (
+		<Row className="">
+			<div className="col-12 my--card override--padding">
+				<Card className="my--card--stuff">
+					<CardHeader>
+						<Row>
+							<Col className="text-left" sm="6">
+								<h5 className="card-category">{name}</h5>
+								<CardTitle tag="h4">Plays per {name}</CardTitle>
+							</Col>
+							<BarTimeControl setTime={handleTime} />
+						</Row>
+					</CardHeader>
+					<CardBody>
+						{error ? (
+							<h3>Error: {error}</h3>
+						) : loading ? (
+							<RingLoader
+								css={override}
+								size={90}
+								color={"#1d8cf8"}
+								loading={true}
+							/>
+						) : (
+							<Bar
+								data={barchartDetails(data).data}
+								options={barchartDetails(data).options}
+							/>
+						)}
+					</CardBody>
+				</Card>
+			</div>
+		</Row>
+	);
+};
+
+const barchartDetails = (input) => {
+	const myLabels = input.map((row) => row.item);
+	const myData = input.map((row) => row.total);
+	const suggestedMax = Math.max(...myData) + 2;
+	const suggestedMin = Math.min(...myData) - 2;
+	const actualMin = suggestedMin < 0 ? 0 : suggestedMin;
+	const padding = suggestedMax / 10;
+
+	return {
+		data: (canvas) => {
+			let ctx = canvas.getContext("2d");
+
+			let gradientStroke = ctx.createLinearGradient(0, 230, 0, 50);
+
+			gradientStroke.addColorStop(1, "rgba(72,72,176,0.1)");
+			gradientStroke.addColorStop(0.4, "rgba(72,72,176,0.0)");
+			gradientStroke.addColorStop(0, "rgba(119,52,169,0)"); //purple colors
+
+			return {
+				labels: myLabels,
+				datasets: [
+					{
+						label: "Streams",
+						fill: true,
+						backgroundColor: gradientStroke,
+						hoverBackgroundColor: gradientStroke,
+						borderColor: "#d048b6",
+						borderWidth: 2,
+						borderDash: [],
+						borderDashOffset: 0.0,
+						data: myData,
+					},
+				],
+			};
+		},
+		options: {
+			maintainAspectRatio: false,
+			legend: {
+				display: false,
+			},
+			tooltips: {
+				backgroundColor: "#f5f5f5",
+				titleFontColor: "#333",
+				bodyFontColor: "#666",
+				bodySpacing: 4,
+				xPadding: 12,
+				mode: "nearest",
+				intersect: 0,
+				position: "nearest",
+			},
+			responsive: true,
+			scales: {
+				yAxes: [
+					{
+						gridLines: {
+							drawBorder: false,
+							color: "rgba(225,78,202,0.1)",
+							zeroLineColor: "transparent",
+						},
+						ticks: {
+							suggestedMin: actualMin,
+							suggestedMax: suggestedMax,
+							padding: padding,
+							fontColor: "#9e9e9e",
+						},
+					},
+				],
+				xAxes: [
+					{
+						gridLines: {
+							drawBorder: false,
+							color: "rgba(225,78,202,0.1)",
+							zeroLineColor: "transparent",
+						},
+						ticks: {
+							padding: 20,
+							fontColor: "#9e9e9e",
+						},
+					},
+				],
+			},
+		},
+	};
+};
+
+const BarTimeControl = ({ setTime }) => {
+	const [clicked, setClicked] = useState(0);
+	const handleClick = (type) => {
+		setClicked(type);
+		setTime(type);
+	};
+	return (
+		<Col sm="6">
+			<ButtonGroup
+				className="btn-group-toggle float-right"
+				data-toggle="buttons"
+			>
+				<Button
+					tag="label"
+					className={
+						clicked === 0
+							? "btn-simple active button-again"
+							: "btn-simple button-again"
+					}
+					color="info"
+					id="0"
+					size="sm"
+					onClick={() => handleClick(0)}
+				>
+					<input
+						defaultChecked
+						className="d-none"
+						name="options"
+						type="radio"
+					/>
+					<span className="d-none d-sm-block d-md-block d-lg-block d-xl-block">
+						This Week
+					</span>
+					<span className="d-block d-sm-none">
+						<i className="tim-icons  icon-single-02" />
+					</span>
+				</Button>
+				<Button
+					tag="label"
+					className={
+						clicked === 1
+							? "btn-simple active button-again"
+							: "btn-simple button-again"
+					}
+					color="info"
+					id="0"
+					size="sm"
+					onClick={() => handleClick(1)}
+				>
+					<input
+						defaultChecked
+						className="d-none"
+						name="options"
+						type="radio"
+					/>
+					<span className="d-none d-sm-block d-md-block d-lg-block d-xl-block">
+						Last 7 Days
+					</span>
+					<span className="d-block d-sm-none">
+						<i className="tim-icons icon-single-02" />
+					</span>
+				</Button>
+				<Button
+					color="info"
+					id="1"
+					size="sm"
+					tag="label"
+					className={
+						clicked === 2
+							? "btn-simple active button-again"
+							: "btn-simple button-again"
+					}
+					onClick={() => handleClick(2)}
+				>
+					<input className="d-none" name="options" type="radio" />
+					<span className="d-none d-sm-block d-md-block d-lg-block d-xl-block">
+						This Month
+					</span>
+					<span className="d-block d-sm-none">
+						<i className="tim-icons icon-gift-2" />
+					</span>
+				</Button>
+				<Button
+					color="info"
+					id="2"
+					size="sm"
+					tag="label"
+					className={
+						clicked === 3
+							? "btn-simple active button-again"
+							: "btn-simple button-again"
+					}
+					onClick={() => handleClick(3)}
+				>
+					<input className="d-none" name="options" type="radio" />
+					<span className="d-none d-sm-block d-md-block d-lg-block d-xl-block">
+						This Year
+					</span>
+					<span className="d-block d-sm-none">
+						<i className="tim-icons icon-tap-02" />
+					</span>
+				</Button>
+			</ButtonGroup>
+		</Col>
 	);
 };
 
@@ -248,7 +465,7 @@ const ControlButtons = () => {
 						type="radio"
 					/>
 					<span className="d-none d-sm-block d-md-block d-lg-block d-xl-block">
-						Daily
+						This Week
 					</span>
 					<span className="d-block d-sm-none">
 						<i className="tim-icons icon-single-02" />
@@ -263,7 +480,7 @@ const ControlButtons = () => {
 				>
 					<input className="d-none" name="options" type="radio" />
 					<span className="d-none d-sm-block d-md-block d-lg-block d-xl-block">
-						Monthly
+						This Month
 					</span>
 					<span className="d-block d-sm-none">
 						<i className="tim-icons icon-gift-2" />
@@ -278,7 +495,7 @@ const ControlButtons = () => {
 				>
 					<input className="d-none" name="options" type="radio" />
 					<span className="d-none d-sm-block d-md-block d-lg-block d-xl-block">
-						Annually
+						This Year
 					</span>
 					<span className="d-block d-sm-none">
 						<i className="tim-icons icon-tap-02" />
@@ -288,6 +505,7 @@ const ControlButtons = () => {
 		</Col>
 	);
 };
+
 let chart1_2_options = {
 	maintainAspectRatio: false,
 	legend: {
@@ -552,4 +770,5 @@ let chartExample3 = {
 		},
 	},
 };
+
 export default Dashboard;

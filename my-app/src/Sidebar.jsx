@@ -41,6 +41,26 @@ function Sidebar() {
 				</div>
 				<hr className="hrstyle" />
 				<Nav className="noliststyle">
+					<li className="db" onClick={() => setActive("notifications")}>
+						<NavLink
+							to="/notifications"
+							className="nav-link sb__element"
+							activeClassName="active"
+						>
+							<div key={key} className="icon-all">
+								{isActive("notifications") ? (
+									<i className="fa fa-circle fa-sm my--icon"></i>
+								) : (
+									<i className="fa fa-circle fa-sm my--icon hide"></i>
+								)}
+								<div className="align--center">
+									<i className="fa fa-bell my--icon"></i>
+									<div>Live Feed</div>
+								</div>
+							</div>
+						</NavLink>
+					</li>
+
 					<li className="db" onClick={() => setActive("dashboard")}>
 						<NavLink
 							to="/"

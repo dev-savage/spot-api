@@ -39,7 +39,7 @@ async function main(user) {
 		await goToNextTrack(driver);
 		await waitFor(1000, 900);
 
-		await playAlbumThrough(driver, albumToPlay.name);
+		await playAlbumThrough(driver, albumToPlay);
 
 		//!Log out stuff
 		await logout(driver);
@@ -269,7 +269,7 @@ const getAlbumName = (driver) => {
 		});
 	});
 };
-const playAlbumThrough = async (driver, name) => {
+const playAlbumThrough = async (driver, album) => {
 	let currentSong = "";
 	const time = randomTime(540000, 490000);
 	const delay = 30000;
@@ -283,7 +283,7 @@ const playAlbumThrough = async (driver, name) => {
 			await waitFor(29000);
 			getCurrentPlayingSong(driver).then((song) => {
 				if (song !== currentSong) {
-					db.incrementAlbum(name).then(() => {
+					db.incrementAlbum(album).then(() => {
 						currentSong = song;
 					});
 				}

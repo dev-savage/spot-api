@@ -46,7 +46,10 @@ const incrementAlbum = (album) => {
 	console.log("incrementing", album);
 	return new Promise((resolve, reject) => {
 		axios
-			.post(`http://localhost:3000/plays`, { album: album })
+			.post(`http://localhost:3000/plays`, {
+				album: album.name,
+				artist: album.artist,
+			})
 			.then(() => {
 				resolve();
 			})
