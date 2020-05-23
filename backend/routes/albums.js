@@ -13,15 +13,19 @@ router
 		});
 	})
 	.post("/", (req, res, next) => {
-		db.pool.query(insertAlbum(req), (err, results, fields) => {
-			if (err) {
-				res.send("Error inserting album");
-			} else {
-				res.send("Success");
-				pool.query(insertAlbumPlays(req), (err, res, fields) => {
-					if (err) connection.release();
-				});
-			}
+		db.pool.getConnection(function (err, connection) {
+			connection.query(insertAlbum(req), (err, results, fields) => {
+				if (err) {
+					res.send("Error inserting album");
+				} else {
+					res.send("Success");
+					connection.query(insertAlbumPlays(req), (err, res, fields) => {
+						if (err) console.log(err);
+						connection.release();
+						res.send();
+					});
+				}
+			});
 		});
 	});
 

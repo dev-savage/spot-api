@@ -7,6 +7,7 @@ import Albums from "./views/Albums";
 import Users from "./views/Users";
 import VirtualMachines from "./views/VirtualMachines";
 import Notifications from "./views/Notifications";
+import Errors from "./views/Errors";
 
 const Main = () => {
 	return (
@@ -17,6 +18,7 @@ const Main = () => {
 				<Route path="/albums" component={Albums} />
 				<Route path="/vms" component={VirtualMachines} />
 				<Route path="/notifications" component={Notifications} />
+				<Route path="/errors" component={Errors} />
 			</Switch>
 		</main>
 	);

@@ -76,6 +76,9 @@
 .my--card {
 	padding: 5.8em 0em 0em 21em;
 }
+.my--card--right {
+	padding: 5.8em 0em 0em 3em;
+}
 
 .my--card--stuff {
 	background: #27293d;

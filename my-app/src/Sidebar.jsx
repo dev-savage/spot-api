@@ -11,6 +11,7 @@ import {
 	faCircle,
 	faDesktop,
 	faBell,
+	faExclamation,
 } from "@fortawesome/free-solid-svg-icons";
 fontawesome.library.add(
 	faMusic,
@@ -18,7 +19,8 @@ fontawesome.library.add(
 	faUsers,
 	faCircle,
 	faDesktop,
-	faBell
+	faBell,
+	faExclamation
 );
 
 function Sidebar() {
@@ -137,21 +139,21 @@ function Sidebar() {
 							</div>
 						</NavLink>
 					</li>
-					<li className="db" onClick={() => setActive("notifications")}>
+					<li className="db" onClick={() => setActive("errors")}>
 						<NavLink
-							to="/notifications"
+							to="/errors"
 							className="nav-link sb__element"
 							activeClassName="active"
 						>
 							<div key={key} className="icon-all">
-								{isActive("notifications") ? (
+								{isActive("errors") ? (
 									<i className="fa fa-circle fa-sm my--icon"></i>
 								) : (
 									<i className="fa fa-circle fa-sm my--icon hide"></i>
 								)}
 								<div className="align--center">
-									<i className="fa fa-bell my--icon"></i>
-									<div>Notifications</div>
+									<i className="fa faExclamation my--icon"></i>
+									<div>Errors</div>
 								</div>
 							</div>
 						</NavLink>
