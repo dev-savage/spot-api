@@ -73,7 +73,7 @@ async function main(user) {
 		let albumToPlay;
 		try {
 			albumToPlay = await db.getRandomAlbum();
-			console.log("Playing: ", albumToPlay);
+			console.log("Playing: ", albumToPlay.name);
 			await waitFor(randomTime(2000, 1000));
 		} catch (e) {
 			throw {
@@ -140,7 +140,7 @@ async function main(user) {
 
 		try {
 			await playAlbumThrough(driver, albumToPlay);
-			console.log("letting album play");
+			console.log("Letting album play");
 		} catch (e) {
 			throw {
 				reason: "Issue letting album shuffle play ",
@@ -154,7 +154,7 @@ async function main(user) {
 		try {
 			await logout(driver);
 			log.logout(user);
-			console.log("logged out");
+			console.log("Logged out");
 		} catch (e) {
 			throw {
 				reason: "Issue logging user out ",
@@ -168,7 +168,7 @@ async function main(user) {
 		await log.error(e);
 	} finally {
 		await waitFor(7000);
-		await driver.quit();
+		await driver.close();
 	}
 }
 
@@ -179,14 +179,12 @@ const asyncForEach = async (array, callback) => {
 };
 const start = async () => {
 	let user;
-	console.log("in start");
 	try {
 		user = await db.randomFreeUser();
 	} catch (e) {
 		console.log("failed to get user");
 	}
-	console.log("got user");
-	console.log(user);
+	console.log(user.email);
 	await main(user);
 	start();
 };
