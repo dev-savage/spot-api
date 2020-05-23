@@ -25,7 +25,7 @@ const override = css`
 	border-color: red;
 	margin-bottom: 3em;
 `;
-
+const ep = "http://77.68.118.54/api/plays/barchart/";
 const Dashboard = () => {
 	return (
 		<div className="content">
@@ -45,7 +45,7 @@ const LineCard = () => {
 	useEffect(() => {
 		setLoading(true);
 		axios
-			.get(`http://localhost:3000/api/plays/linechart/${time}`)
+			.get(`http://77.68.118.54/api/plays/linechart/${time}`)
 			.then((res) => {
 				console.log(res.data);
 				createTotal(res.data);
@@ -130,8 +130,6 @@ const BarCard = ({ resource }) => {
 	const [loading, setLoading] = useState(true);
 	const [time, setTime] = useState("WEEK");
 	const [total, setTotal] = useState(0);
-
-	const ep = "http://77.68.118.54/api/plays/barchart/";
 
 	useEffect(() => {
 		const fetchData = async () => {

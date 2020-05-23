@@ -32,6 +32,7 @@ router
 router.get("/random", (req, res, next) => {
 	db.pool.getConnection(function (err, connection) {
 		connection.query(selectRandom(), function (error, results, fields) {
+			connection.release();
 			if (err) console.log(err);
 			res.send(results);
 		});
