@@ -293,3 +293,17 @@ fieldset[disabled] .btn-info.active {
 	text-decoration: none;
 	box-shadow: none;
 }
+
+.music--line--symbol {
+	color: #1d8cf8;
+}
+.music--bar--symbol {
+	color: #d048b6;
+}
+
+.header--symbol {
+	display: flex;
+}
+.header--figure {
+	padding-left: 0.3em;
+}

@@ -16,7 +16,9 @@ import "../css/Dp.css";
 import { css } from "@emotion/core";
 import RingLoader from "react-spinners/RingLoader";
 import axios from "axios";
-
+import fontawesome from "@fortawesome/fontawesome";
+import { faMusic } from "@fortawesome/free-solid-svg-icons";
+fontawesome.library.add(faMusic);
 const override = css`
 	display: block;
 	margin: 0 auto;
@@ -25,156 +27,112 @@ const override = css`
 `;
 
 const Dashboard = () => {
-	const [error, setError] = useState(null);
-	const [dataa, setData] = useState(null);
-	const [bar, setBar] = useState(null);
-
-	useEffect(() => {
-		setTimeout(() => {
-			if (Math.random > 10) setError(true);
-			const d = [
-				{
-					name: "Page A",
-					uv: 4000,
-					pv: 2400,
-					amt: 2400,
-				},
-				{
-					name: "Page B",
-					uv: 3000,
-					pv: 1398,
-					amt: 2210,
-				},
-				{
-					name: "Page C",
-					uv: 2000,
-					pv: 9800,
-					amt: 2290,
-				},
-				{
-					name: "Page D",
-					uv: 2780,
-					pv: 3908,
-					amt: 2000,
-				},
-				{
-					name: "Page E",
-					uv: 1890,
-					pv: 4800,
-					amt: 2181,
-				},
-				{
-					name: "Page F",
-					uv: 2390,
-					pv: 3800,
-					amt: 2500,
-				},
-				{
-					name: "Page G",
-					uv: 3490,
-					pv: 4300,
-					amt: 2100,
-				},
-			];
-			const b = [
-				{
-					name: "Page A",
-					uv: 4000,
-					pv: 2400,
-					amt: 2400,
-				},
-				{
-					name: "Page B",
-					uv: 3000,
-					pv: 1398,
-					amt: 2210,
-				},
-				{
-					name: "Page C",
-					uv: 2000,
-					pv: 9800,
-					amt: 2290,
-				},
-				{
-					name: "Page D",
-					uv: 2780,
-					pv: 3908,
-					amt: 2000,
-				},
-				{
-					name: "Page E",
-					uv: 1890,
-					pv: 4800,
-					amt: 2181,
-				},
-				{
-					name: "Page F",
-					uv: 2390,
-					pv: 3800,
-					amt: 2500,
-				},
-				{
-					name: "Page G",
-					uv: 3490,
-					pv: 4300,
-					amt: 2100,
-				},
-			];
-			setData(d);
-			setBar(b);
-		}, 1500);
-	}, []);
-
 	return (
 		<div className="content">
-			<Row>
-				<div className="col-12 my--card">
-					<Card className="my--card--stuff">
-						<CardHeader>
-							<Row>
-								<Col className="text-left" sm="6">
-									<h5 className="card-category">Overall</h5>
-									<CardTitle tag="h4">Overall Plays</CardTitle>
-								</Col>
-								<ControlButtons />
-								{/* <Datee /> */}
-							</Row>
-						</CardHeader>
-						<CardBody>
-							{error ? (
-								<h3>Error {error}</h3>
-							) : dataa ? (
-								// <AC data={data} />
-								<Line
-									data={chartExample1.data1}
-									options={chartExample1.options}
-								/>
-							) : (
-								<RingLoader
-									css={override}
-									size={90}
-									color={"#1d8cf8"}
-									loading={true}
-								/>
-							)}
-						</CardBody>
-					</Card>
-				</div>
-			</Row>
+			<LineCard />
 			<BarCard resource={"artist"} />
 			<BarCard resource={"album"} />
 		</div>
 	);
 };
 
+const LineCard = () => {
+	const [line, setLine] = useState([]);
+	const [error, setError] = useState(false);
+	const [loading, setLoading] = useState(false);
+	const [time, setTime] = useState("WEEK");
+	const [total, setTotal] = useState(0);
+	useEffect(() => {
+		setLoading(true);
+		axios
+			.get(`http://localhost:3000/api/plays/linechart/${time}`)
+			.then((res) => {
+				console.log(res.data);
+				createTotal(res.data);
+				setLine(res.data);
+				setLoading(false);
+			})
+			.catch((err) => {
+				console.log(err);
+				setError(true);
+				setLoading(false);
+			});
+	}, [time]);
+	const createTotal = (data) => {
+		let t = 0;
+		data.forEach((el) => {
+			t += el.count;
+		});
+		setTotal(t);
+	};
+
+	const changed = (value) => {
+		console.log("changed to " + value);
+		switch (value) {
+			case 0: {
+				setTime("WEEK");
+				break;
+			}
+			case 1: {
+				setTime("MONTH");
+				break;
+			}
+			case 2: {
+				setTime("YTD");
+				break;
+			}
+			default: {
+				setTime("YTD");
+				break;
+			}
+		}
+	};
+
+	return (
+		<Row>
+			<div className="col-12 my--card">
+				<Card className="my--card--stuff">
+					<CardHeader>
+						<Row>
+							<Col className="text-left" sm="6">
+								<h5 className="card-category">Overall</h5>
+								<CardTitle className="header--symbol" tag="h4">
+									<div>
+										<i className="fa fa-music music--line--symbol"></i>
+									</div>
+									<div className="header--figure ">{total} streams</div>
+								</CardTitle>
+							</Col>
+							<ControlButtons setTime={changed} />
+						</Row>
+					</CardHeader>
+					<CardBody>
+						{error ? (
+							<h3>Error {error}</h3>
+						) : line ? (
+							<Line
+								data={linechartDetails(line).data1}
+								options={LineChartOptions(line)}
+							/>
+						) : (
+							<Loader />
+						)}
+					</CardBody>
+				</Card>
+			</div>
+		</Row>
+	);
+};
 const BarCard = ({ resource }) => {
 	const name = resource.charAt(0).toUpperCase() + resource.slice(1);
 	const [error, setError] = useState(false);
 	const [data, setData] = useState(null);
 	const [loading, setLoading] = useState(true);
 	const [time, setTime] = useState("WEEK");
+	const [total, setTotal] = useState(0);
+
 	const ep = "http://77.68.118.54/api/plays/barchart/";
-	console.log(ep);
+
 	useEffect(() => {
 		const fetchData = async () => {
 			setError(false);
@@ -184,6 +142,7 @@ const BarCard = ({ resource }) => {
 				.get(`${ep}${resource}/${time}`)
 				.then((result) => {
 					setData(result.data);
+					getTotal(result.data);
 					setLoading(false);
 				})
 				.catch((error) => {
@@ -198,6 +157,14 @@ const BarCard = ({ resource }) => {
 		fetchData();
 	}, [time]);
 
+	const getTotal = (input) => {
+		let t = 0;
+		input.forEach((el) => {
+			console.log(el);
+			t += el.total;
+		});
+		setTotal(t);
+	};
 	const handleTime = (update) => {
 		switch (update) {
 			case 0:
@@ -225,7 +192,12 @@ const BarCard = ({ resource }) => {
 						<Row>
 							<Col className="text-left" sm="6">
 								<h5 className="card-category">{name}</h5>
-								<CardTitle tag="h4">Plays per {name}</CardTitle>
+								<CardTitle className="header--symbol" tag="h4">
+									<div>
+										<i className="fa fa-music music--bar--symbol"></i>
+									</div>
+									<div className="header--figure ">{total} streams</div>
+								</CardTitle>
 							</Col>
 							<BarTimeControl setTime={handleTime} />
 						</Row>
@@ -337,7 +309,6 @@ const barchartDetails = (input) => {
 		},
 	};
 };
-
 const BarTimeControl = ({ setTime }) => {
 	const [clicked, setClicked] = useState(0);
 	const handleClick = (type) => {
@@ -444,8 +415,201 @@ const BarTimeControl = ({ setTime }) => {
 		</Col>
 	);
 };
+const linechartDetails = (input) => {
+	const labels = input.map((month) => month.MontnameYear);
+	const values = input.map((month) => month.count);
 
-const ControlButtons = () => {
+	return {
+		data1: (canvas) => {
+			let ctx = canvas.getContext("2d");
+
+			let gradientStroke = ctx.createLinearGradient(0, 230, 0, 50);
+
+			gradientStroke.addColorStop(1, "rgba(29,140,248,0.2)");
+			gradientStroke.addColorStop(0.4, "rgba(29,140,248,0.0)");
+			gradientStroke.addColorStop(0, "rgba(29,140,248,0)"); //blue colors
+
+			return {
+				labels: labels,
+				datasets: [
+					{
+						label: "Plays",
+						fill: true,
+						backgroundColor: gradientStroke,
+						borderColor: "#1f8ef1",
+						borderWidth: 2,
+						borderDash: [],
+						borderDashOffset: 0.0,
+						pointBackgroundColor: "#1f8ef1",
+						pointBorderColor: "rgba(255,255,255,0)",
+						pointHoverBackgroundColor: "#1f8ef1",
+						pointBorderWidth: 20,
+						pointHoverRadius: 4,
+						pointHoverBorderWidth: 15,
+						pointRadius: 4,
+						data: values,
+					},
+				],
+			};
+		},
+		data2: (canvas) => {
+			let ctx = canvas.getContext("2d");
+
+			let gradientStroke = ctx.createLinearGradient(0, 230, 0, 50);
+
+			gradientStroke.addColorStop(1, "rgba(29,140,248,0.2)");
+			gradientStroke.addColorStop(0.4, "rgba(29,140,248,0.0)");
+			gradientStroke.addColorStop(0, "rgba(29,140,248,0)"); //blue colors
+
+			return {
+				labels: [
+					"JAN",
+					"FEB",
+					"MAR",
+					"APR",
+					"MAY",
+					"JUN",
+					"JUL",
+					"AUG",
+					"SEP",
+					"OCT",
+					"NOV",
+					"DEC",
+				],
+				datasets: [
+					{
+						label: "My First dataset",
+						fill: true,
+						backgroundColor: gradientStroke,
+						borderColor: "#1f8ef1",
+						borderWidth: 2,
+						borderDash: [],
+						borderDashOffset: 0.0,
+						pointBackgroundColor: "#1f8ef1",
+						pointBorderColor: "rgba(255,255,255,0)",
+						pointHoverBackgroundColor: "#1f8ef1",
+						pointBorderWidth: 20,
+						pointHoverRadius: 4,
+						pointHoverBorderWidth: 15,
+						pointRadius: 4,
+						data: [80, 120, 105, 110, 95, 105, 90, 100, 80, 95, 70, 120],
+					},
+				],
+			};
+		},
+		data3: (canvas) => {
+			let ctx = canvas.getContext("2d");
+
+			let gradientStroke = ctx.createLinearGradient(0, 230, 0, 50);
+
+			gradientStroke.addColorStop(1, "rgba(29,140,248,0.2)");
+			gradientStroke.addColorStop(0.4, "rgba(29,140,248,0.0)");
+			gradientStroke.addColorStop(0, "rgba(29,140,248,0)"); //blue colors
+
+			return {
+				labels: [
+					"JAN",
+					"FEB",
+					"MAR",
+					"APR",
+					"MAY",
+					"JUN",
+					"JUL",
+					"AUG",
+					"SEP",
+					"OCT",
+					"NOV",
+					"DEC",
+				],
+				datasets: [
+					{
+						label: "My First dataset",
+						fill: true,
+						backgroundColor: gradientStroke,
+						borderColor: "#1f8ef1",
+						borderWidth: 2,
+						borderDash: [],
+						borderDashOffset: 0.0,
+						pointBackgroundColor: "#1f8ef1",
+						pointBorderColor: "rgba(255,255,255,0)",
+						pointHoverBackgroundColor: "#1f8ef1",
+						pointBorderWidth: 20,
+						pointHoverRadius: 4,
+						pointHoverBorderWidth: 15,
+						pointRadius: 4,
+						data: [60, 80, 65, 130, 80, 105, 90, 130, 70, 115, 60, 130],
+					},
+				],
+			};
+		},
+		options: chart1_2_options,
+	};
+};
+
+const LineChartOptions = (input) => {
+	const values = input.map((month) => month.count);
+
+	const suggestedMin = Math.min(...values) < 0 ? 0 : Math.min(...values);
+	const suggestedMax =
+		Math.max(...values) + Math.ceil(Math.max(...values) * 0.1);
+
+	return {
+		maintainAspectRatio: false,
+		legend: {
+			display: false,
+		},
+		tooltips: {
+			backgroundColor: "#f5f5f5",
+			titleFontColor: "#333",
+			bodyFontColor: "#666",
+			bodySpacing: 4,
+			xPadding: 12,
+			mode: "nearest",
+			intersect: 0,
+			position: "nearest",
+		},
+		responsive: true,
+		scales: {
+			yAxes: [
+				{
+					barPercentage: 1.6,
+					gridLines: {
+						drawBorder: false,
+						color: "rgba(29,140,248,0.0)",
+						zeroLineColor: "transparent",
+					},
+					ticks: {
+						suggestedMin: suggestedMin,
+						suggestedMax: suggestedMax,
+						padding: 20,
+						fontColor: "#9a9a9a",
+					},
+				},
+			],
+			xAxes: [
+				{
+					barPercentage: 1.6,
+					gridLines: {
+						drawBorder: false,
+						color: "rgba(29,140,248,0.1)",
+						zeroLineColor: "transparent",
+					},
+					ticks: {
+						padding: 20,
+						fontColor: "#9a9a9a",
+					},
+				},
+			],
+		},
+	};
+};
+
+const ControlButtons = ({ setTime }) => {
+	const [clicked, setClicked] = useState(0);
+	const handleClick = (type) => {
+		setClicked(type);
+		setTime(type);
+	};
 	return (
 		<Col sm="6">
 			<ButtonGroup
@@ -454,10 +618,15 @@ const ControlButtons = () => {
 			>
 				<Button
 					tag="label"
-					className="btn-simple button-again"
+					className={
+						clicked === 0
+							? "btn-simple active button-again"
+							: "btn-simple button-again"
+					}
 					color="info"
 					id="0"
 					size="sm"
+					onClick={() => handleClick(0)}
 				>
 					<input
 						defaultChecked
@@ -469,6 +638,31 @@ const ControlButtons = () => {
 						This Week
 					</span>
 					<span className="d-block d-sm-none">
+						<i className="tim-icons  icon-single-02" />
+					</span>
+				</Button>
+				<Button
+					tag="label"
+					className={
+						clicked === 1
+							? "btn-simple active button-again"
+							: "btn-simple button-again"
+					}
+					color="info"
+					id="0"
+					size="sm"
+					onClick={() => handleClick(1)}
+				>
+					<input
+						defaultChecked
+						className="d-none"
+						name="options"
+						type="radio"
+					/>
+					<span className="d-none d-sm-block d-md-block d-lg-block d-xl-block">
+						This Month
+					</span>
+					<span className="d-block d-sm-none">
 						<i className="tim-icons icon-single-02" />
 					</span>
 				</Button>
@@ -477,29 +671,19 @@ const ControlButtons = () => {
 					id="1"
 					size="sm"
 					tag="label"
-					className="btn-simple button-again"
-				>
-					<input className="d-none" name="options" type="radio" />
-					<span className="d-none d-sm-block d-md-block d-lg-block d-xl-block">
-						This Month
-					</span>
-					<span className="d-block d-sm-none">
-						<i className="tim-icons icon-gift-2" />
-					</span>
-				</Button>
-				<Button
-					color="info"
-					id="2"
-					size="sm"
-					tag="label"
-					className="btn-simple active button-again"
+					className={
+						clicked === 2
+							? "btn-simple active button-again"
+							: "btn-simple button-again"
+					}
+					onClick={() => handleClick(2)}
 				>
 					<input className="d-none" name="options" type="radio" />
 					<span className="d-none d-sm-block d-md-block d-lg-block d-xl-block">
 						This Year
 					</span>
 					<span className="d-block d-sm-none">
-						<i className="tim-icons icon-tap-02" />
+						<i className="tim-icons icon-gift-2" />
 					</span>
 				</Button>
 			</ButtonGroup>
@@ -772,4 +956,9 @@ let chartExample3 = {
 	},
 };
 
+const Loader = () => {
+	return (
+		<RingLoader css={override} size={90} color={"#1d8cf8"} loading={true} />
+	);
+};
 export default Dashboard;

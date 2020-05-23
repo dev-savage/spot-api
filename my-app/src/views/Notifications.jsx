@@ -70,8 +70,8 @@ const Widgets = () => {
 						/> */}
 						<div style={myStyle}>
 							<Today />
-							<Today />
-							<Today />
+							<Month />
+							<Money />
 						</div>
 					</CardBody>
 				</Card>
@@ -145,9 +145,26 @@ const useStyles = makeStyles((theme) => ({
 
 const Today = (props) => {
 	const { className, ...rest } = props;
-
+	const [data, setData] = useState([]);
 	const classes = useStyles();
 
+	useEffect(() => {
+		const ep = "http://77.68.118.54/api";
+		axios
+			.get(`${ep}/plays/today`)
+			.then((result) => {
+				setData(result.data[0].total);
+				// setLoading(false);
+			})
+			.catch((error) => {
+				// if (error.response) {
+				// 	setError(error.response.status);
+				// } else {
+				// 	setError("Could not get Data");
+				// }
+				// setLoading(false);
+			});
+	}, []);
 	return (
 		<CC {...rest} className={clsx(classes.root, className)}>
 			<CardContent>
@@ -159,9 +176,9 @@ const Today = (props) => {
 							gutterBottom
 							variant="body2"
 						>
-							BUDGET
+							Today
 						</Typography>
-						<Typography variant="h3">$24,000</Typography>
+						<Typography variant="h3">{data}</Typography>
 					</Grid>
 					<Grid item>
 						<Avatar className={classes.avatar}>
@@ -189,11 +206,11 @@ const Month = (props) => {
 	const classes = useStyles();
 
 	useEffect(() => {
-		const ep = "http://77.68.118.54/api/";
+		const ep = "http://77.68.118.54/api";
 		axios
 			.get(`${ep}/plays/thismonth`)
 			.then((result) => {
-				setData(result.data);
+				setData(result.data[0].total);
 				// setLoading(false);
 			})
 			.catch((error) => {
@@ -218,7 +235,64 @@ const Month = (props) => {
 						>
 							Month
 						</Typography>
-						<Typography variant="h3">$24,000</Typography>
+						<Typography variant="h3">{data}</Typography>
+					</Grid>
+					<Grid item>
+						<Avatar className={classes.avatar}>
+							<MoneyIcon className={classes.icon} />
+						</Avatar>
+					</Grid>
+				</Grid>
+				<div className={classes.difference}>
+					<ArrowDownwardIcon className={classes.differenceIcon} />
+					<Typography className={classes.differenceValue} variant="body2">
+						12%
+					</Typography>
+					<Typography className={classes.caption} variant="caption">
+						Since last month
+					</Typography>
+				</div>
+			</CardContent>
+		</CC>
+	);
+};
+
+const Money = (props) => {
+	const { className, ...rest } = props;
+	const [data, setData] = useState([]);
+	const classes = useStyles();
+
+	useEffect(() => {
+		const ep = "http://77.68.118.54/api";
+		axios
+			.get(`${ep}/plays/thismonth`)
+			.then((result) => {
+				setData(result.data[0].total * 0.0032);
+				// setLoading(false);
+			})
+			.catch((error) => {
+				// if (error.response) {
+				// 	setError(error.response.status);
+				// } else {
+				// 	setError("Could not get Data");
+				// }
+				// setLoading(false);
+			});
+	}, []);
+	return (
+		<CC {...rest} className={clsx(classes.root, className)}>
+			<CardContent>
+				<Grid container justify="space-between">
+					<Grid item>
+						<Typography
+							className={classes.title}
+							color="textSecondary"
+							gutterBottom
+							variant="body2"
+						>
+							Estimated Pay
+						</Typography>
+						<Typography variant="h3">${data}</Typography>
 					</Grid>
 					<Grid item>
 						<Avatar className={classes.avatar}>

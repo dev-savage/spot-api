@@ -37,7 +37,6 @@ createTheme("solarized", {
 	},
 });
 const columns = [
-	{ name: "id", selector: "idalbums", sortable: true },
 	{
 		name: "Name",
 		selector: "name",

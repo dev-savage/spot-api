@@ -152,7 +152,7 @@ function Sidebar() {
 									<i className="fa fa-circle fa-sm my--icon hide"></i>
 								)}
 								<div className="align--center">
-									<i className="fa faExclamation my--icon"></i>
+									<i className="fa fa-exclamation my--icon"></i>
 									<div>Errors</div>
 								</div>
 							</div>

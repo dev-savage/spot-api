@@ -82,10 +82,38 @@ const determineSQL = (type, time) => {
 	}
 };
 
+router.get("/linechart/:time", function (req, res, next) {
+	const time = req.params.time;
+	const sql = determineLineSQL(time);
+	db.pool.getConnection(function (err, conn) {
+		if (err) console.log(err);
+		query(conn, sql)
+			.then((result) => res.send(result))
+			.catch((err) => res.send(err));
+	});
+});
+
+const determineLineSQL = (time) => {
+	switch (time) {
+		case "WEEK": {
+			return "Select DayName(`date_of_play`) MontnameYear, SUM(`count`) as count FROM  plays  where  DAY(date_of_play) > (DAY(CURDATE()-7)) GROUP BY DayName(`date_of_play`) ORDER by MIN(`date_of_play`)";
+		}
+		case "MONTH": {
+			return "SELECT DAY(date_of_play) as MontnameYear, SUM(count) as count FROM plays  WHERE WEEK(date_of_play) >= WEEK(CURDATE()) - 4 GROUP BY DAY(date_of_play)ORDER by MIN(date_of_play)";
+		}
+		case "YTD": {
+			return `Select DATE_FORMAT(date_of_play,'%M') MontnameYear, SUM(count) as count FROM plays GROUP BY DATE_FORMAT(date_of_play,'%M') ORDER by MIN(date_of_play)`;
+		}
+		default: {
+			return `Select DATE_FORMAT(date_of_play,'%M %Y') MontnameYear, SUM(count) as count FROM plays GROUP BY DATE_FORMAT(date_of_play,'%M %Y') ORDER by MIN(date_of_play)`;
+		}
+	}
+};
 const query = (connection, sql) => {
 	return new Promise((resolve, reject) => {
 		connection.query(sql, function (err, res, f) {
 			connection.release();
+			console.log(res);
 			if (err) reject(err);
 			resolve(res);
 		});
@@ -138,7 +166,7 @@ router
 
 router.get("/today", (req, res, next) => {
 	db.pool.getConnection(function (err, connection) {
-		const tp = `SELECT  SUM(count) as total FROM plays WHERE DAY(date_of_play) > (DAY(CURDATE()-1))`;
+		const tp = `SELECT SUM(count) as total FROM plays WHERE DAY(date_of_play) > (DAY(CURDATE()-1))`;
 		connection.query(tp, function (error, results, fields) {
 			connection.release();
 			res.send(results);
@@ -150,6 +178,7 @@ router.get("/thismonth", (req, res, next) => {
 		const tp = `SELECT SUM(count) as total FROM plays WHERE MONTH(date_of_play) = MONTH(CURDATE())`;
 		connection.query(tp, function (error, results, fields) {
 			connection.release();
+			console.log(results);
 			res.send(results);
 		});
 	});
