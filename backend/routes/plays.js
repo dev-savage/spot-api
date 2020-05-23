@@ -47,6 +47,7 @@ router.get("/test", function (req, res, next) {
 	db.pool.getConnection(function (err, conn) {
 		if (err) console.log(err);
 		conn.query("select * from users", function (e, r, f) {
+			conn.release();
 			if (err) console.log(err);
 			res.send(r);
 		});
@@ -61,7 +62,6 @@ router.get("/barchart/:type/:time", function (req, res, next) {
 		query(conn, sql)
 			.then((result) => res.send(result))
 			.catch((err) => res.send(err));
-		conn.release();
 	});
 });
 
@@ -85,6 +85,7 @@ const determineSQL = (type, time) => {
 const query = (connection, sql) => {
 	return new Promise((resolve, reject) => {
 		connection.query(sql, function (err, res, f) {
+			connection.release();
 			if (err) reject(err);
 			resolve(res);
 		});
@@ -118,16 +119,19 @@ router
 				if (error) console.log(error);
 				if (results.affectedRows != 1) {
 					connection.query(insertNewDayForPlay(album, artist, d), function (
-						error,
-						results,
-						fields
+						e,
+						r,
+						f
 					) {
-						if (error) console.log(error);
+						if (e) console.log(e);
+						connection.release();
+						res.send(r);
 					});
+				} else {
+					connection.release();
+					if (err) console.log(err);
+					res.send(results);
 				}
-				connection.release();
-				if (err) console.log(err);
-				res.send(results);
 			});
 		});
 	});

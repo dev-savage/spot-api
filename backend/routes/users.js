@@ -15,13 +15,16 @@ router
 		});
 	})
 	.post("/", (req, res, next) => {
-		db.pool.query(insertUser(req), (err, results, fields) => {
-			if (err) console.log(err);
-			if (err) {
-				res.send("Error inserting user");
-			} else {
-				res.send("Success");
-			}
+		db.pool.getConnection(function (err, connection) {
+			connection.query(insertUser(req), (err, results, fields) => {
+				connection.release();
+				if (err) console.log(err);
+				if (err) {
+					res.send("Error inserting user");
+				} else {
+					res.send("Success");
+				}
+			});
 		});
 	});
 
@@ -46,12 +49,15 @@ router
 		});
 	})
 	.post("/:email", (req, res, next) => {
-		db.pool.query(setLoginBroken(req), (err, results, fields) => {
-			if (err) {
-				res.send("Couldn't set login broke");
-			} else {
-				res.send("Success");
-			}
+		db.pool.getConnection(function (err, connection) {
+			connection.query(setLoginBroken(req), (err, results, fields) => {
+				connection.release();
+				if (err) {
+					res.send("Couldn't set login broke");
+				} else {
+					res.send("Success");
+				}
+			});
 		});
 	})
 	.put("/:email", (req, res, next) => {
