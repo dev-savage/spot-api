@@ -136,6 +136,25 @@ router
 		});
 	});
 
+router.get("/today", (req, res, next) => {
+	db.pool.getConnection(function (err, connection) {
+		const tp = `SELECT  SUM(count) as total FROM plays WHERE DAY(date_of_play) > (DAY(CURDATE()-1))`;
+		connection.query(tp, function (error, results, fields) {
+			connection.release();
+			res.send(results);
+		});
+	});
+});
+router.get("/thismonth", (req, res, next) => {
+	db.pool.getConnection(function (err, connection) {
+		const tp = `SELECT SUM(count) as total FROM plays WHERE MONTH(date_of_play) = MONTH(CURDATE())`;
+		connection.query(tp, function (error, results, fields) {
+			connection.release();
+			res.send(results);
+		});
+	});
+});
+
 router.get("/month", (req, res, next) => {
 	let results = [];
 	db.pool.getConnection(function (err, connection) {

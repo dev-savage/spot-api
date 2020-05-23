@@ -37,31 +37,46 @@ createTheme("solarized", {
 	},
 });
 const columns = [
-	{ name: "id", selector: "idalbums", sortable: true },
 	{
-		name: "Name",
-		selector: "name",
+		name: "Issue",
+		selector: "issue",
 		sortable: true,
 	},
 	{
-		name: "Artist",
-		selector: "artist",
+		name: "IP Address",
+		selector: "ip_address",
 		sortable: true,
 	},
 	{
-		name: "Url",
-		selector: "url",
+		name: "Time",
+		selector: "time",
+		sortable: true,
+	},
+	{
+		name: "User",
+		selector: "user",
+		sortable: true,
+	},
+	{
+		name: "Album",
+		selector: "album",
+		sortable: true,
+	},
+	{
+		name: "Description",
+		selector: "description",
 		sortable: true,
 	},
 ];
 
 const Albums = () => {
 	const [count, setCount] = useState(0);
-	const [albums, setAlbums] = useState(null);
+	const [errors, setErrors] = useState(null);
 
 	useEffect(() => {
-		axios.get("http://77.68.118.54/api/albums").then((data) => {
-			setAlbums(data.data);
+		axios.get("http://77.68.118.54/api/errors").then((res) => {
+			console.log(res.data);
+			setErrors(res.data);
 		});
 	}, [count]);
 
@@ -74,11 +89,11 @@ const Albums = () => {
 							<CardTitle tag="h4">Errors</CardTitle>
 						</CardHeader>
 						<CardBody>
-							{albums ? (
+							{errors ? (
 								<DataTable
 									title=""
 									columns={columns}
-									data={albums}
+									data={errors}
 									defaultSortField="id"
 									selectableRows={false}
 									// selected={handleSelect}

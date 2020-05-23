@@ -57,8 +57,7 @@ const Widgets = () => {
 					<CardHeader>
 						<Row>
 							<Col className="text-left" sm="6">
-								<h5 className="card-category">PLays</h5>
-								<CardTitle tag="h4">Todays Plays</CardTitle>
+								<h5 className="card-category">Plays</h5>
 							</Col>
 						</Row>
 					</CardHeader>
@@ -161,6 +160,63 @@ const Today = (props) => {
 							variant="body2"
 						>
 							BUDGET
+						</Typography>
+						<Typography variant="h3">$24,000</Typography>
+					</Grid>
+					<Grid item>
+						<Avatar className={classes.avatar}>
+							<MoneyIcon className={classes.icon} />
+						</Avatar>
+					</Grid>
+				</Grid>
+				<div className={classes.difference}>
+					<ArrowDownwardIcon className={classes.differenceIcon} />
+					<Typography className={classes.differenceValue} variant="body2">
+						12%
+					</Typography>
+					<Typography className={classes.caption} variant="caption">
+						Since last month
+					</Typography>
+				</div>
+			</CardContent>
+		</CC>
+	);
+};
+
+const Month = (props) => {
+	const { className, ...rest } = props;
+	const [data, setData] = useState([]);
+	const classes = useStyles();
+
+	useEffect(() => {
+		const ep = "http://77.68.118.54/api/";
+		axios
+			.get(`${ep}/plays/thismonth`)
+			.then((result) => {
+				setData(result.data);
+				// setLoading(false);
+			})
+			.catch((error) => {
+				// if (error.response) {
+				// 	setError(error.response.status);
+				// } else {
+				// 	setError("Could not get Data");
+				// }
+				// setLoading(false);
+			});
+	}, []);
+	return (
+		<CC {...rest} className={clsx(classes.root, className)}>
+			<CardContent>
+				<Grid container justify="space-between">
+					<Grid item>
+						<Typography
+							className={classes.title}
+							color="textSecondary"
+							gutterBottom
+							variant="body2"
+						>
+							Month
 						</Typography>
 						<Typography variant="h3">$24,000</Typography>
 					</Grid>
