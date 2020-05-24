@@ -170,7 +170,7 @@ const Albums = () => {
 									onSelectedRowsChange={handleSelect}
 									pagination={true}
 									pointerOnHover={true}
-									dense={true}
+									dense={false}
 									noTableHead={false}
 									fixedHeader={true}
 									fixedHeaderScrollHeight="300px"

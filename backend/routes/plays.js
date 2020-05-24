@@ -142,7 +142,11 @@ router
 			const d = moment(new Date()).format("YYYY-MM-DD") + " 00:00:00";
 			connection.query(VMOnLatestDay(vm, date), function (e, r, f) {
 				if (e) throw e;
-				connection.query(getSQLToUpdateVM(r, vm, date), function (e, r, f) {
+				connection.query(getSQLToUpdateVM(r, vm, date, album), function (
+					e,
+					r,
+					f
+				) {
 					if (e) throw e;
 					connection.query(selectDayForPlay(album, d), function (
 						error,
@@ -416,11 +420,11 @@ const VMOnLatestDay = (vm, date) => {
 	return `SELECT * FROM spotify.vm where vm='${vm}' and current_day='${date}'`;
 };
 
-const getSQLToUpdateVM = (r, vm, d) => {
+const getSQLToUpdateVM = (r, vm, d, album) => {
 	if (r.length === 0) {
-		return `UPDATE spotify.vm SET count='1', current_day='${d}' WHERE vm='${vm}'`;
+		return `UPDATE spotify.vm SET count='1', current_day='${d}', album='${album}' WHERE vm='${vm}'`;
 	} else {
-		return `UPDATE spotify.vm SET count = count + 1 where vm='${vm}'`;
+		return `UPDATE spotify.vm SET count = count + 1, album='${album}' WHERE vm='${vm}'`;
 	}
 };
 

@@ -9,9 +9,6 @@ import {
 	faFileExcel,
 } from "@fortawesome/free-solid-svg-icons";
 import "../css/Card.css";
-import DeleteAlbum from "../components/DeleteAlbum";
-import AddAlbum from "../components/AddAlbum";
-import EditAlbum from "../components/EditAlbum";
 import axios from "axios";
 fontawesome.library.add(faPlus, faTrashAlt, faPencilAlt, faFileExcel);
 
@@ -99,7 +96,7 @@ const Albums = () => {
 									// selected={handleSelect}
 									pagination={true}
 									pointerOnHover={true}
-									dense={true}
+									dense={false}
 									noTableHead={false}
 									fixedHeader={true}
 									fixedHeaderScrollHeight="300px"

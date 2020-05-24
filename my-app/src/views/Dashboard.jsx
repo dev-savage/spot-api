@@ -40,7 +40,7 @@ const LineCard = () => {
 	const [line, setLine] = useState([]);
 	const [error, setError] = useState(false);
 	const [loading, setLoading] = useState(false);
-	const [time, setTime] = useState("WEEK");
+	const [time, setTime] = useState("MONTH");
 	const [total, setTotal] = useState(0);
 	useEffect(() => {
 		setLoading(true);
@@ -603,7 +603,7 @@ const LineChartOptions = (input) => {
 };
 
 const ControlButtons = ({ setTime }) => {
-	const [clicked, setClicked] = useState(0);
+	const [clicked, setClicked] = useState(1);
 	const handleClick = (type) => {
 		setClicked(type);
 		setTime(type);
@@ -614,31 +614,6 @@ const ControlButtons = ({ setTime }) => {
 				className="btn-group-toggle float-right"
 				data-toggle="buttons"
 			>
-				<Button
-					tag="label"
-					className={
-						clicked === 0
-							? "btn-simple active button-again"
-							: "btn-simple button-again"
-					}
-					color="info"
-					id="0"
-					size="sm"
-					onClick={() => handleClick(0)}
-				>
-					<input
-						defaultChecked
-						className="d-none"
-						name="options"
-						type="radio"
-					/>
-					<span className="d-none d-sm-block d-md-block d-lg-block d-xl-block">
-						This Week
-					</span>
-					<span className="d-block d-sm-none">
-						<i className="tim-icons  icon-single-02" />
-					</span>
-				</Button>
 				<Button
 					tag="label"
 					className={

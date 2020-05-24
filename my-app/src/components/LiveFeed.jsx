@@ -34,38 +34,44 @@ createTheme("solarized", {
 	},
 });
 const columns = [
-	{ name: "id", selector: "idalbums", sortable: true },
 	{
 		name: "Hostname",
-		selector: "name",
+		selector: "vm",
 		sortable: true,
 	},
 	{
-		name: "Artist",
-		selector: "artist",
+		name: "Time",
+		selector: "time",
 		sortable: true,
 	},
 	{
 		name: "Url",
-		selector: "url",
+		selector: "album",
 		sortable: true,
 	},
 ];
 
 const Albums = () => {
-	const [add, setAdd] = useState(false);
-	const [edit, setEdit] = useState(false);
-	const [del, setDel] = useState(false);
-	const [selectedA, setSelectedA] = useState(null);
 	const [count, setCount] = useState(0);
 	const [albums, setAlbums] = useState(null);
-	const handleSelect = (e) => {
-		setSelectedA(e.selectedRows);
-	};
 
+	const formatDate = (newDate) => {
+		let date = newDate.split("T")[0];
+		let time = newDate.split("T")[1];
+		let seconds = time.split(".")[0];
+		return date + " @ " + seconds;
+	};
 	useEffect(() => {
-		axios.get("http://77.68.118.54/api/albums").then((data) => {
-			setAlbums(data.data);
+		axios.get("http://77.68.118.54/api/virtualmachines/").then((data) => {
+			let p = data.data.map((vm) => {
+				return {
+					vm: vm.vm,
+					time: formatDate(vm.last_play),
+					album: "www.spotify.com",
+				};
+			});
+			setAlbums(p);
+			console.log(data.data);
 		});
 	}, [count]);
 
@@ -75,7 +81,7 @@ const Albums = () => {
 				<div className="col-12 my--card override--padding">
 					<Card className="my--card--stuff">
 						<CardHeader>
-							<CardTitle tag="h4">Latest Plays</CardTitle>
+							<CardTitle tag="h4">Latest Plays by Virtual Machine</CardTitle>
 						</CardHeader>
 						<CardBody>
 							{albums ? (
@@ -83,10 +89,7 @@ const Albums = () => {
 									title=""
 									columns={columns}
 									data={albums}
-									defaultSortField="id"
-									selectableRows={true}
-									// selected={handleSelect}
-									onSelectedRowsChange={handleSelect}
+									defaultSortField="time"
 									pagination={true}
 									pointerOnHover={true}
 									dense={true}

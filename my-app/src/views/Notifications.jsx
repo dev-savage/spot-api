@@ -7,14 +7,7 @@ import "../css/Dp.css";
 import { css } from "@emotion/core";
 import axios from "axios";
 import { makeStyles } from "@material-ui/styles";
-import {
-	Card as CC,
-	CardContent,
-	Grid,
-	Typography,
-	Avatar,
-} from "@material-ui/core";
-import ArrowDownwardIcon from "@material-ui/icons/ArrowDownward";
+import { Card as CC, CardContent, Grid } from "@material-ui/core";
 import clsx from "clsx";
 import fontawesome from "@fortawesome/fontawesome";
 import {
@@ -194,8 +187,18 @@ const Month = (props) => {
 				setData(result.data[0].total);
 				axios
 					.get(`${ep}/plays/lastmonth`)
-					.then((result) => {
-						setData(result.data[0].total);
+					.then((r) => {
+						let t = r.data[0].total;
+						let diff = t - result.data[0].total;
+						if (diff < 0) {
+							setPositive(false);
+						} else {
+							setPositive(true);
+						}
+						let frac = diff / result.data[0].total;
+						let p = frac * 100;
+						let q = p.toFixed(1);
+						setYesterday(q);
 					})
 					.catch((error) => {});
 			})
@@ -215,14 +218,18 @@ const Month = (props) => {
 						</div>
 					</Grid>
 				</Grid>
-				<div className={classes.difference}>
-					<ArrowDownwardIcon className={classes.differenceIcon} />
-					<Typography className={classes.differenceValue} variant="body2">
-						12%
-					</Typography>
-					<Typography className={classes.caption} variant="caption">
-						Since last month
-					</Typography>
+				<div className="percentage__stat">
+					{positive ? (
+						<div>
+							<i className="fa fa-arrow-up music--bar--symbol"></i>
+						</div>
+					) : (
+						<div>
+							<i className="fa fa-arrow-down music--bar--symbol"></i>
+						</div>
+					)}
+					<p className="text__color space"> {yesterday}%</p>
+					<p className="text__color space"> Since last month</p>
 				</div>
 			</CardContent>
 		</CC>
@@ -233,6 +240,8 @@ const Money = (props) => {
 	const { className, ...rest } = props;
 	const [data, setData] = useState([]);
 	const classes = useStyles();
+	const [yesterday, setYesterday] = useState(0);
+	const [positive, setPositive] = useState("true");
 
 	useEffect(() => {
 		const ep = "http://77.68.118.54/api";
@@ -242,6 +251,22 @@ const Money = (props) => {
 				let f = result.data[0].total * 0.0032;
 				let g = f.toFixed(2);
 				setData(g);
+				axios
+					.get(`${ep}/plays/lastmonth`)
+					.then((r) => {
+						let t = r.data[0].total;
+						let diff = t - result.data[0].total;
+						if (diff < 0) {
+							setPositive(false);
+						} else {
+							setPositive(true);
+						}
+						let frac = diff / result.data[0].total;
+						let p = frac * 100;
+						let q = p.toFixed(1);
+						setYesterday(q);
+					})
+					.catch((error) => {});
 			})
 			.catch((error) => {});
 	}, []);
@@ -259,14 +284,18 @@ const Money = (props) => {
 						</div>
 					</Grid>
 				</Grid>
-				<div className={classes.difference}>
-					<ArrowDownwardIcon className={classes.differenceIcon} />
-					<Typography className={classes.differenceValue} variant="body2">
-						12%
-					</Typography>
-					<Typography className={classes.caption} variant="caption">
-						Since last month
-					</Typography>
+				<div className="percentage__stat">
+					{positive ? (
+						<div>
+							<i className="fa fa-arrow-up music--bar--symbol"></i>
+						</div>
+					) : (
+						<div>
+							<i className="fa fa-arrow-down music--bar--symbol"></i>
+						</div>
+					)}
+					<p className="text__color space"> {yesterday}%</p>
+					<p className="text__color space"> Since last month</p>
 				</div>
 			</CardContent>
 		</CC>

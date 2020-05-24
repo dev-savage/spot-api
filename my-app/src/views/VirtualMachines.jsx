@@ -16,7 +16,6 @@ import {
 	faFileExcel,
 } from "@fortawesome/free-solid-svg-icons";
 import { css } from "@emotion/core";
-import { makeStyles } from "@material-ui/styles";
 import "../css/Card.css";
 import "../css/VirtualMachines.css";
 import RingLoader from "react-spinners/RingLoader";
@@ -87,7 +86,6 @@ const VM2 = (props) => {
 	};
 
 	const { className, ...rest } = props;
-	const [data, setData] = useState([]);
 	const [date, setDate] = useState(formatDate(props.machine.last_play));
 	const [status, setStatus] = useState(false);
 
