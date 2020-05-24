@@ -43,13 +43,13 @@ const getRandomAlbum = () => {
 	});
 };
 
-const incrementAlbum = (album) => {
-	console.log("incrementing", album);
+const incrementAlbum = (album, hostname) => {
 	return new Promise((resolve, reject) => {
 		axios
 			.post(`${ep}/api/plays`, {
 				album: album.name,
 				artist: album.artist,
+				hostname: hostname,
 			})
 			.then(() => {
 				resolve();

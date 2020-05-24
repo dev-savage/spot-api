@@ -10,7 +10,13 @@ const waitFor = (ms) => new Promise((r) => setTimeout(r, ms));
 const ip_getter = require("./ipaddress");
 const ipaddress = ip_getter.getAddress();
 
-async function main(user) {
+async function main() {
+	let user;
+	try {
+		user = await db.randomFreeUser();
+	} catch (e) {
+		console.log("failed to get user");
+	}
 	let driver;
 	try {
 		try {
@@ -178,14 +184,7 @@ const asyncForEach = async (array, callback) => {
 	}
 };
 const start = async () => {
-	let user;
-	try {
-		user = await db.randomFreeUser();
-	} catch (e) {
-		console.log("failed to get user");
-	}
-	console.log(user.email);
-	await main(user);
+	await main();
 	start();
 };
 const setOptions = () => {
@@ -398,7 +397,7 @@ const playAlbumThrough = async (driver, album) => {
 			await waitFor(29000);
 			getCurrentPlayingSong(driver).then((song) => {
 				if (song !== currentSong) {
-					db.incrementAlbum(album).then(() => {
+					db.incrementAlbum(album, ipaddress).then(() => {
 						currentSong = song;
 					});
 				}
@@ -454,4 +453,4 @@ const getAddress = () => {
 	return arr[0];
 };
 
-module.exports = { start };
+module.exports = { start, main };

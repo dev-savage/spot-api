@@ -138,28 +138,35 @@ router
 		db.pool.getConnection(function (err, connection) {
 			const album = req.body.album;
 			const artist = req.body.artist;
+			const vm = req.body.vm;
 			const d = moment(new Date()).format("YYYY-MM-DD") + " 00:00:00";
-			connection.query(selectDayForPlay(album, d), function (
-				error,
-				results,
-				fields
-			) {
-				if (error) console.log(error);
-				if (results.affectedRows != 1) {
-					connection.query(insertNewDayForPlay(album, artist, d), function (
-						e,
-						r,
-						f
+			connection.query(VMOnLatestDay(vm, date), function (e, r, f) {
+				if (e) throw e;
+				connection.query(getSQLToUpdateVM(r, vm, date), function (e, r, f) {
+					if (e) throw e;
+					connection.query(selectDayForPlay(album, d), function (
+						error,
+						results,
+						fields
 					) {
-						if (e) console.log(e);
-						connection.release();
-						res.send(r);
+						if (error) console.log(error);
+						if (results.affectedRows != 1) {
+							connection.query(insertNewDayForPlay(album, artist, d), function (
+								e,
+								r,
+								f
+							) {
+								if (e) console.log(e);
+								connection.release();
+								res.send(r);
+							});
+						} else {
+							connection.release();
+							if (err) console.log(err);
+							res.send(results);
+						}
 					});
-				} else {
-					connection.release();
-					if (err) console.log(err);
-					res.send(results);
-				}
+				});
 			});
 		});
 	});
@@ -384,6 +391,19 @@ const selectLastWeek = () => {
 
 const selectLastDay = () => {
 	return `SELECT * FROM spotify.plays WHERE date_of_play >= NOW() - INTERVAL 1 DAY`;
+};
+
+// VM STUFF
+const VMOnLatestDay = (vm, date) => {
+	return `SELECT * FROM spotify.vm where vm='${vm}' and current_day='${date}'`;
+};
+
+const getSQLToUpdateVM = (r, vm, d) => {
+	if (r.length === 0) {
+		return `UPDATE spotify.vm SET count='1', current_day='${d}' WHERE vm='${vm}'`;
+	} else {
+		return `UPDATE spotify.vm SET count = count + 1 where vm='${vm}'`;
+	}
 };
 
 module.exports = router;

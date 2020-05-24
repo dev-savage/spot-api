@@ -1,12 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const db = require("../utils/database");
-const util = require("util");
-const exec = util.promisify(require("child_process").exec);
-
-router.get("/", (req, res, next) => {
-	res.send("virtualmachines");
-});
 
 router.post("/start", async (req, res, next) => {
 	const ip = req.body.ip;
@@ -17,9 +11,26 @@ router.post("/start", async (req, res, next) => {
 	res.send(result);
 });
 
-async function ls() {
-	const { stdout, stderr } = await exec("ls");
-	return stdout;
-}
+router.post("/end", (req, res, next) => {
+	db.pool.getConnection(function (err, connection) {
+		connection.query(insertError(req), function (error, results, fields) {
+			if (error) throw error;
+			connection.release();
+			res.send(results);
+		});
+	});
+});
+
+router.get("/today", (req, res, next) => {
+	const vm = req.body.vm;
+	const sql = `SELECT status, count, last_play FROM spotify.vm where vm='${vm}'`;
+	db.pool.getConnection(function (err, connection) {
+		connection.query(sql, function (error, results, fields) {
+			if (error) throw error;
+			connection.release();
+			res.send(results);
+		});
+	});
+});
 
 module.exports = router;
