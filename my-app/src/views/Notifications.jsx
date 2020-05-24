@@ -1,21 +1,10 @@
 import React, { useState, useEffect } from "react";
 import LiveFeed from "../components/LiveFeed";
-import {
-	Card,
-	CardHeader,
-	CardBody,
-	CardTitle,
-	Row,
-	Col,
-	ButtonGroup,
-	Button,
-} from "reactstrap";
+import { Card, CardHeader, CardBody, CardTitle, Row, Col } from "reactstrap";
 import "../css/Card.css";
-import { Bar, Line } from "react-chartjs-2";
 import "../css/Dashboard.css";
 import "../css/Dp.css";
 import { css } from "@emotion/core";
-import RingLoader from "react-spinners/RingLoader";
 import axios from "axios";
 import { makeStyles } from "@material-ui/styles";
 import {
@@ -28,6 +17,13 @@ import {
 import ArrowDownwardIcon from "@material-ui/icons/ArrowDownward";
 import MoneyIcon from "@material-ui/icons/Money";
 import clsx from "clsx";
+import fontawesome from "@fortawesome/fontawesome";
+import {
+	faSun,
+	faCalendar,
+	faDollarSign,
+} from "@fortawesome/free-solid-svg-icons";
+fontawesome.library.add(faSun, faCalendar, faDollarSign);
 const override = css`
 	display: block;
 	margin: 0 auto;
@@ -62,43 +58,11 @@ const Widgets = () => {
 						</Row>
 					</CardHeader>
 					<CardBody>
-						{/* <RingLoader
-							css={override}
-							size={90}
-							color={"#1d8cf8"}
-							loading={true}
-						/> */}
 						<div style={myStyle}>
 							<Today />
 							<Month />
 							<Money />
 						</div>
-					</CardBody>
-				</Card>
-			</div>
-		</Row>
-	);
-};
-const Feed = () => {
-	return (
-		<Row>
-			<div className="col-12 my--card override--padding">
-				<Card className="my--card--stuff">
-					<CardHeader>
-						<Row>
-							<Col className="text-left" sm="6">
-								<h5 className="card-category">Feed</h5>
-								<CardTitle tag="h4">Latest Plays</CardTitle>
-							</Col>
-						</Row>
-					</CardHeader>
-					<CardBody>
-						<RingLoader
-							css={override}
-							size={90}
-							color={"#1d8cf8"}
-							loading={true}
-						/>
 					</CardBody>
 				</Card>
 			</div>
@@ -119,6 +83,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 	title: {
 		fontWeight: 700,
+		color: "white",
 	},
 	avatar: {
 		backgroundColor: "white",
@@ -154,36 +119,21 @@ const Today = (props) => {
 			.get(`${ep}/plays/today`)
 			.then((result) => {
 				setData(result.data[0].total);
-				// setLoading(false);
 			})
-			.catch((error) => {
-				// if (error.response) {
-				// 	setError(error.response.status);
-				// } else {
-				// 	setError("Could not get Data");
-				// }
-				// setLoading(false);
-			});
+			.catch((error) => {});
 	}, []);
 	return (
 		<CC {...rest} className={clsx(classes.root, className)}>
 			<CardContent>
 				<Grid container justify="space-between">
 					<Grid item>
-						<Typography
-							className={classes.title}
-							color="textSecondary"
-							gutterBottom
-							variant="body2"
-						>
-							Today
-						</Typography>
-						<Typography variant="h3">{data}</Typography>
+						<h5 className="text__color">Today</h5>
+						<h4 className="text__color">{data}</h4>
 					</Grid>
 					<Grid item>
-						<Avatar className={classes.avatar}>
-							<MoneyIcon className={classes.icon} />
-						</Avatar>
+						<div>
+							<i className="fa fa-sun music--bar--symbol"></i>
+						</div>
 					</Grid>
 				</Grid>
 				<div className={classes.difference}>
@@ -211,36 +161,21 @@ const Month = (props) => {
 			.get(`${ep}/plays/thismonth`)
 			.then((result) => {
 				setData(result.data[0].total);
-				// setLoading(false);
 			})
-			.catch((error) => {
-				// if (error.response) {
-				// 	setError(error.response.status);
-				// } else {
-				// 	setError("Could not get Data");
-				// }
-				// setLoading(false);
-			});
+			.catch((error) => {});
 	}, []);
 	return (
 		<CC {...rest} className={clsx(classes.root, className)}>
 			<CardContent>
 				<Grid container justify="space-between">
 					<Grid item>
-						<Typography
-							className={classes.title}
-							color="textSecondary"
-							gutterBottom
-							variant="body2"
-						>
-							Month
-						</Typography>
-						<Typography variant="h3">{data}</Typography>
+						<h5 className="text__color">Month</h5>
+						<h4 className="text__color">{data}</h4>
 					</Grid>
 					<Grid item>
-						<Avatar className={classes.avatar}>
-							<MoneyIcon className={classes.icon} />
-						</Avatar>
+						<div>
+							<i className="fa fa-calendar music--bar--symbol"></i>
+						</div>
 					</Grid>
 				</Grid>
 				<div className={classes.difference}>
@@ -267,37 +202,24 @@ const Money = (props) => {
 		axios
 			.get(`${ep}/plays/thismonth`)
 			.then((result) => {
-				setData(result.data[0].total * 0.0032);
-				// setLoading(false);
+				let f = result.data[0].total * 0.0032;
+				let g = f.toFixed(2);
+				setData(g);
 			})
-			.catch((error) => {
-				// if (error.response) {
-				// 	setError(error.response.status);
-				// } else {
-				// 	setError("Could not get Data");
-				// }
-				// setLoading(false);
-			});
+			.catch((error) => {});
 	}, []);
 	return (
 		<CC {...rest} className={clsx(classes.root, className)}>
 			<CardContent>
 				<Grid container justify="space-between">
 					<Grid item>
-						<Typography
-							className={classes.title}
-							color="textSecondary"
-							gutterBottom
-							variant="body2"
-						>
-							Estimated Pay
-						</Typography>
-						<Typography variant="h3">${data}</Typography>
+						<h5 className="text__color">Estimated Pay</h5>
+						<h4 className="text__color">${data}</h4>
 					</Grid>
 					<Grid item>
-						<Avatar className={classes.avatar}>
-							<MoneyIcon className={classes.icon} />
-						</Avatar>
+						<div>
+							<i className="fa fa-dollar-sign music--bar--symbol"></i>
+						</div>
 					</Grid>
 				</Grid>
 				<div className={classes.difference}>

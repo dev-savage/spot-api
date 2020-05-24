@@ -89,12 +89,23 @@ const VM2 = (props) => {
 	const { className, ...rest } = props;
 	const [data, setData] = useState([]);
 	const [date, setDate] = useState(formatDate(props.machine.last_play));
-	const [status, setStatus] = useState(props.machine.status);
+	const [status, setStatus] = useState(false);
+
 	const [loadingStatus, setLoadingStatus] = useState(false);
 	const vmStyle = {
 		width: "100%",
 	};
 
+	useEffect(() => {
+		if (props.machine.status.indexOf("t")) {
+			console.log("in here setting as true");
+			setStatus(true);
+		} else {
+			console.log("in here setting as false");
+
+			setStatus(false);
+		}
+	}, []);
 	useInterval(() => {
 		axios
 			.get(
@@ -118,7 +129,7 @@ const VM2 = (props) => {
 		axios
 			.post(`http://77.68.118.54/api/virtualmachines/status`, {
 				vm: props.machine.vm,
-				status: s,
+				status: !s,
 			})
 			.then((res) => {})
 			.catch((err) => {});

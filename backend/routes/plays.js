@@ -173,7 +173,17 @@ router
 
 router.get("/today", (req, res, next) => {
 	db.pool.getConnection(function (err, connection) {
-		const tp = `SELECT SUM(count) as total FROM plays WHERE DAY(date_of_play) > (DAY(CURDATE()-1))`;
+		const tp = `SELECT SUM(count) as total FROM plays WHERE DAY(date_of_play) > (DAY(CURDATE()-1)) and  MONTH(date_of_play) = MONTH(CURDATE())`;
+		connection.query(tp, function (error, results, fields) {
+			connection.release();
+			res.send(results);
+		});
+	});
+});
+
+router.get("/yesterday", (req, res, next) => {
+	db.pool.getConnection(function (err, connection) {
+		const tp = `SELECT SUM(count) as total FROM plays WHERE DAY(date_of_play) = (DAY(CURDATE()-1)) and  MONTH(date_of_play) = MONTH(CURDATE())`;
 		connection.query(tp, function (error, results, fields) {
 			connection.release();
 			res.send(results);

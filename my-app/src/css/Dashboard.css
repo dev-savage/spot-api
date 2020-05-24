@@ -307,3 +307,7 @@ fieldset[disabled] .btn-info.active {
 .header--figure {
 	padding-left: 0.3em;
 }
+
+.text__color {
+	color: white !important;
+}
