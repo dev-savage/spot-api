@@ -39,7 +39,6 @@ const VirtualMachines = () => {
 			.get("http://77.68.118.54/api/virtualmachines")
 			.then((res) => {
 				setVm(res.data);
-				// console.log(res.data);
 			})
 			.catch((err) => {
 				setError(err);
@@ -99,14 +98,20 @@ const VM2 = (props) => {
 	useInterval(() => {
 		axios
 			.get(
-				`http://77.68.118.54/api/virtualmachines?vm=${props.machine.hostname}`
+				`http://77.68.118.54/api/virtualmachines/today?vm=${props.machine.vm}`
 			)
 			.then((res) => {
-				let d = formatDate(res.data.last_play);
+				let d = formatDate(res.data[0].last_play);
 				setDate(d);
+				if (res.data[0].status.indexOf("t")) {
+					setStatus(true);
+				} else {
+					setStatus(false);
+				}
+				setLoadingStatus(false);
 			})
 			.catch((err) => {});
-	}, 10000);
+	}, 5000);
 
 	const toggleStatus = (s) => {
 		setLoadingStatus(true);
@@ -115,10 +120,7 @@ const VM2 = (props) => {
 				vm: props.machine.vm,
 				status: s,
 			})
-			.then((res) => {
-				setStatus(s);
-				setLoadingStatus(false);
-			})
+			.then((res) => {})
 			.catch((err) => {});
 	};
 	return (

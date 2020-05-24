@@ -5,7 +5,8 @@ const db = require("../utils/database");
 router.post("/status", (req, res, next) => {
 	const vm = req.body.vm;
 	const status = req.body.status;
-	const sql = `UPDATE spotify.vm SET status='${status}' WHERE vm='${vm}';`;
+	const sql = `UPDATE spotify.vm SET status='${status}' WHERE vm='${vm}'`;
+	console.log(sql);
 	db.pool.getConnection(function (err, connection) {
 		connection.query(sql, function (error, results, fields) {
 			if (error) throw error;
