@@ -21,6 +21,16 @@ router.post("/end", (req, res, next) => {
 	});
 });
 
+router.get("/", (req, res, next) => {
+	const sql = `SELECT status, count, last_play FROM spotify.vm where vm='${vm}'`;
+	db.pool.getConnection(function (err, connection) {
+		connection.query(sql, function (error, results, fields) {
+			if (error) throw error;
+			connection.release();
+			res.send(results);
+		});
+	});
+});
 router.get("/today", (req, res, next) => {
 	const vm = req.query.vm;
 	const sql = `SELECT status, count, last_play FROM spotify.vm where vm='${vm}'`;
