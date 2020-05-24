@@ -11,3 +11,19 @@
 	width: 100% !important;
 	margin: 0 1em 0 1em;
 }
+
+.vm__content__container {
+	display: flex;
+	justify-content: space-evenly;
+	padding: 1em 1em 1em 1em;
+}
+
+.text__color {
+	color: white;
+}
+.inner__card {
+	background: linear-gradient(0deg, #3358f4, #1d8cf8);
+}
+.my--card--inner {
+	padding-left: 2.8em;
+}
