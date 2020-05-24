@@ -22,7 +22,7 @@ router.post("/end", (req, res, next) => {
 });
 
 router.get("/", (req, res, next) => {
-	const sql = `SELECT status, count, last_play FROM spotify.vm`;
+	const sql = `SELECT * last_play FROM spotify.vm`;
 	db.pool.getConnection(function (err, connection) {
 		connection.query(sql, function (error, results, fields) {
 			if (error) throw error;
