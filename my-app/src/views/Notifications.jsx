@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import LiveFeed from "../components/LiveFeed";
-import { Card, CardHeader, CardBody, CardTitle, Row, Col } from "reactstrap";
+import { Card, CardHeader, CardBody, Row, Col } from "reactstrap";
 import "../css/Card.css";
 import "../css/Dashboard.css";
 import "../css/Dp.css";
@@ -15,15 +15,22 @@ import {
 	Avatar,
 } from "@material-ui/core";
 import ArrowDownwardIcon from "@material-ui/icons/ArrowDownward";
-import MoneyIcon from "@material-ui/icons/Money";
 import clsx from "clsx";
 import fontawesome from "@fortawesome/fontawesome";
 import {
 	faSun,
 	faCalendar,
 	faDollarSign,
+	faArrowUp,
+	faArrowDown,
 } from "@fortawesome/free-solid-svg-icons";
-fontawesome.library.add(faSun, faCalendar, faDollarSign);
+fontawesome.library.add(
+	faSun,
+	faCalendar,
+	faDollarSign,
+	faArrowUp,
+	faArrowDown
+);
 const override = css`
 	display: block;
 	margin: 0 auto;
@@ -111,6 +118,8 @@ const useStyles = makeStyles((theme) => ({
 const Today = (props) => {
 	const { className, ...rest } = props;
 	const [data, setData] = useState([]);
+	const [yesterday, setYesterday] = useState(0);
+	const [positive, setPositive] = useState("true");
 	const classes = useStyles();
 
 	useEffect(() => {
@@ -119,6 +128,22 @@ const Today = (props) => {
 			.get(`${ep}/plays/today`)
 			.then((result) => {
 				setData(result.data[0].total);
+				axios
+					.get(`${ep}/plays/yesterday`)
+					.then((r) => {
+						let t = r.data[0].total;
+						let diff = t - result.data[0].total;
+						if (diff < 0) {
+							setPositive(false);
+						} else {
+							setPositive(true);
+						}
+						let frac = diff / result.data[0].total;
+						let p = frac * 100;
+						let q = p.toFixed(1);
+						setYesterday(q);
+					})
+					.catch((error) => {});
 			})
 			.catch((error) => {});
 	}, []);
@@ -136,14 +161,18 @@ const Today = (props) => {
 						</div>
 					</Grid>
 				</Grid>
-				<div className={classes.difference}>
-					<ArrowDownwardIcon className={classes.differenceIcon} />
-					<Typography className={classes.differenceValue} variant="body2">
-						12%
-					</Typography>
-					<Typography className={classes.caption} variant="caption">
-						Since last month
-					</Typography>
+				<div className="percentage__stat">
+					{positive ? (
+						<div>
+							<i className="fa fa-arrow-up music--bar--symbol"></i>
+						</div>
+					) : (
+						<div>
+							<i className="fa fa-arrow-down music--bar--symbol"></i>
+						</div>
+					)}
+					<p className="text__color space"> {yesterday}%</p>
+					<p className="text__color space"> Since yesterday</p>
 				</div>
 			</CardContent>
 		</CC>
@@ -153,6 +182,8 @@ const Today = (props) => {
 const Month = (props) => {
 	const { className, ...rest } = props;
 	const [data, setData] = useState([]);
+	const [yesterday, setYesterday] = useState(0);
+	const [positive, setPositive] = useState("true");
 	const classes = useStyles();
 
 	useEffect(() => {
@@ -161,6 +192,12 @@ const Month = (props) => {
 			.get(`${ep}/plays/thismonth`)
 			.then((result) => {
 				setData(result.data[0].total);
+				axios
+					.get(`${ep}/plays/lastmonth`)
+					.then((result) => {
+						setData(result.data[0].total);
+					})
+					.catch((error) => {});
 			})
 			.catch((error) => {});
 	}, []);

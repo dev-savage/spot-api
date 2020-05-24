@@ -195,7 +195,15 @@ router.get("/thismonth", (req, res, next) => {
 		const tp = `SELECT SUM(count) as total FROM plays WHERE MONTH(date_of_play) = MONTH(CURDATE())`;
 		connection.query(tp, function (error, results, fields) {
 			connection.release();
-			console.log(results);
+			res.send(results);
+		});
+	});
+});
+router.get("/lastmonth", (req, res, next) => {
+	db.pool.getConnection(function (err, connection) {
+		const tp = `SELECT SUM(count) as total FROM plays WHERE MONTH(date_of_play) = MONTH(CURDATE()-1)`;
+		connection.query(tp, function (error, results, fields) {
+			connection.release();
 			res.send(results);
 		});
 	});

@@ -311,3 +311,12 @@ fieldset[disabled] .btn-info.active {
 .text__color {
 	color: white !important;
 }
+
+.percentage__stat {
+	display: flex;
+	padding-top: 2em;
+}
+
+.space {
+	padding-left: 0.3em;
+}
