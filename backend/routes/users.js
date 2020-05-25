@@ -48,7 +48,7 @@ router
 			});
 		});
 	})
-	.post("/", (req, res, next) => {
+	.post("/brokenlogin", (req, res, next) => {
 		const email = req.body.email;
 		db.pool.getConnection(function (err, connection) {
 			console.log(setLoginBroken(email));

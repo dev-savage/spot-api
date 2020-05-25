@@ -66,7 +66,7 @@ const incrementAlbum = (album, hostname) => {
 const setLoginBad = (email) => {
 	return new Promise((resolve, reject) => {
 		axios
-			.post(`${ep}/api/users`, {
+			.post(`${ep}/api/users/brokenlogin`, {
 				email: email,
 			})
 			.then(() => {
