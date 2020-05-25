@@ -33,7 +33,7 @@ const insertError = (req) => {
 	const album = e.album ? e.album : "Not available";
 	const description = e.description ? e.description : "Unknown";
 	console.log(pw);
-	return `INSERT INTO spotify.errors (issue, ip_address, user, password, album, description) VALUES ('${e.reason}', '${e.ip}', '${email}', '${pw}',${album} '${description}')`;
+	return `INSERT INTO spotify.errors (issue, ip_address, user, password, album, description) VALUES ('${e.reason}', '${e.ip}', '${email}', '${pw}','${album}', '${description}')`;
 };
 
 module.exports = router;

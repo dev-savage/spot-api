@@ -51,6 +51,7 @@ router
 	.post("/", (req, res, next) => {
 		const email = req.body.email;
 		db.pool.getConnection(function (err, connection) {
+			console.log(setLoginBroken(email));
 			connection.query(setLoginBroken(email), (err, results, fields) => {
 				connection.release();
 				if (err) {
@@ -99,7 +100,7 @@ const selectUser = (req) => {
 	return `select * from users where email='${req.params.email}'`;
 };
 const setLoginBroken = (email) => {
-	return `update users set loginworking=0 where email='${email}'`;
+	return `update users set loginworking='0' where email='${email}'`;
 };
 const updatePass = (req) => {
 	return `update users set password='${req.body.password}', loginworking=1 where email='${req.params.email}'`;
