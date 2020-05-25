@@ -141,9 +141,10 @@ router
 			const d = moment(new Date()).format("YYYY-MM-DD") + " 00:00:00";
 			connection.query(VMOnLatestDay(vm, d), function (e, r, f) {
 				if (e) throw e;
+				console.log(getSQLToUpdateVM(r, vm, d, album));
 				connection.query(getSQLToUpdateVM(r, vm, d, album), function (e, r, f) {
 					if (e) throw e;
-					console.log(r);
+					console.log(r.length);
 					console.log(selectDayForPlay(album, d));
 					connection.query(selectDayForPlay(album, d), function (
 						error,
