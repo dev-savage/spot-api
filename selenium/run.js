@@ -351,7 +351,7 @@ const playAlbum = (driver) => {
 			.wait(
 				until.elementLocated(
 					By.xpath(
-						"/html/body/div[3]/div/div[3]/div[4]/div[1]/div/div[2]/section[1]/div[3]/div/button[1]"
+						"/html/body/div[4]/div/div[3]/div[4]/div[1]/div/div[2]/section[1]/div[3]/div/button[1]"
 					)
 				)
 			)
