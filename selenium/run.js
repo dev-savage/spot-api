@@ -391,12 +391,15 @@ const ensureShuffleOn = (driver) => {
 };
 const goToNextTrack = (driver) => {
 	const nextTrackPath =
-		"/html/body/div[3]/div/div[3]/div[3]/footer/div[2]/div[2]/div/div[1]/div[4]/button";
-	return new Promise((resolve) => {
+		"/html/body/div[4]/div/div[3]/div[3]/footer/div/div[2]/div/div[1]/div[4]/button";
+	console.log("trying to play next track");
+	const nextTrackClass = "spoticon-skip-forward-16";
+	return new Promise((resolve, reject) => {
 		driver
-			.findElement(By.xpath(nextTrackPath))
-			.then((element) => {
-				element.click();
+			.findElements(By.className(nextTrackClass))
+			.then((elements) => {
+				elements[0].click();
+				console.log("next track clicked");
 				resolve();
 			})
 			.catch(() => reject());
