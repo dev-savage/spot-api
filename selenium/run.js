@@ -39,7 +39,7 @@ async function main() {
 	try {
 		user = await db.randomFreeUser();
 	} catch (e) {
-		console.log("failed to get user");
+		// console.log("failed to get user");
 	}
 	let driver;
 	try {
@@ -47,7 +47,7 @@ async function main() {
 			const options = setOptions();
 			driver = await createDriver(options);
 		} catch (e) {
-			console.log(e);
+			// console.log(e);
 			console.log("fucked driver");
 		}
 
@@ -55,7 +55,7 @@ async function main() {
 		try {
 			await openSite(driver);
 			await waitFor(randomTime(5500, 2500));
-			console.log("Opened Spotify!");
+			// console.log("Opened Spotify!");
 		} catch (e) {
 			throw {
 				reason: "Failed to open Browser",
@@ -66,7 +66,7 @@ async function main() {
 
 		try {
 			await openLoginScreen(driver);
-			console.log("Clicked Login Button");
+			// console.log("Clicked Login Button");
 			await waitFor(randomTime(5500, 2500));
 		} catch (e) {
 			throw {
@@ -80,7 +80,7 @@ async function main() {
 			await login(driver, user);
 		} catch (e) {
 			await db.setLoginBad(user.email);
-			console.log("IP Address", ipaddress);
+			// console.log("IP Address", ipaddress);
 			throw {
 				reason: "Failed to login user",
 				ip: ipaddress,
@@ -92,7 +92,7 @@ async function main() {
 		try {
 			LOGIN_TIME = getTime();
 			log.login(user);
-			console.log("Logged in @ " + LOGIN_TIME);
+			// console.log("Logged in @ " + LOGIN_TIME);
 			await waitFor(randomTime(5500, 3500));
 		} catch (e) {
 			throw {
@@ -116,7 +116,7 @@ async function main() {
 				user: user,
 			};
 		}
-
+		console.log("About to openAlbum: " + albumToPlay.url);
 		try {
 			await openAlbum(driver, albumToPlay.url);
 			console.log("Opened Album Page");
@@ -131,6 +131,7 @@ async function main() {
 		}
 
 		try {
+			console.log("About to playAlbum:  " + albumToPlay.url);
 			await playAlbum(driver);
 			console.log("Started Playing Album");
 			await waitFor(randomTime(2000, 1000));

@@ -8,7 +8,7 @@ const login = (user) => {
 			type: 1,
 		})
 		.then((res) => {
-			console.log("Logged login");
+			// console.log("Logged login");
 		})
 		.catch((e) => {
 			throw e;
@@ -22,7 +22,7 @@ const logout = (user) => {
 			type: 0,
 		})
 		.then((res) => {
-			console.log("Logged logout");
+			// console.log("Logged logout");
 		})
 		.catch((e) => {
 			throw e;
@@ -30,11 +30,10 @@ const logout = (user) => {
 };
 
 const error = (e) => {
-	console.log(`${ep}/api/errors`);
 	axios
 		.post(`${ep}/api/errors`, { error: e })
 		.then((res) => {
-			console.log("Logged error");
+			// console.log("Logged error");
 		})
 		.catch((e) => {
 			console.log(e);

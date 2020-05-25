@@ -8,21 +8,20 @@ const randomFreeUser = () => {
 			.get(`${ep}/api/users/random`)
 			.then((result) => {
 				const user = result.data[0];
-				console.log("Got random user");
+				// console.log("Got random user");
 				resolve(user);
 			})
 			.catch((error) => {
 				// Request made, and server responded
 				if (error.response) {
-					console.log(20);
-					console.log(error.response.data);
-					console.log(error.response.status);
+					// console.log(20);
+					// console.log(error.response.data);
+					// console.log(error.response.status);
 					// console.log(error.response.headers);
 				} else if (error.request) {
 					reject("Database Server Unreachable");
 				} else {
-					console.log("19");
-
+					// console.log("19");
 					// Something happened in setting up the request that triggered an Error
 					// console.log("Error", error.message);
 				}
@@ -36,7 +35,7 @@ const getRandomAlbum = () => {
 		axios
 			.get(`${ep}/api/albums/random`)
 			.then((result) => {
-				console.log("Got random album");
+				// console.log("Got random album");
 				resolve(result.data[0]);
 			})
 			.catch((e) => {
@@ -54,7 +53,7 @@ const incrementAlbum = (album, hostname) => {
 				hostname: hostname,
 			})
 			.then(() => {
-				console.log("Incremented Album");
+				// console.log("Incremented Album");
 				resolve();
 			})
 			.catch((e) => {
@@ -70,7 +69,7 @@ const setLoginBad = (email) => {
 				email: email,
 			})
 			.then(() => {
-				console.log("Set login as broken");
+				// console.log("Set login as broken");
 				resolve();
 			})
 			.catch((e) => {
