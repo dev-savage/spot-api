@@ -32,9 +32,9 @@ const insertError = (req) => {
 	console.log(req.body);
 	let e = req.body.error;
 	console.log(e);
-	let email = e.user.user ? e.user.user : "unknown";
+	let email = e.email ? e.email : "unknown";
 	console.log(email);
-	let pw = e.user.password ? e.user.password : "unknown";
+	let pw = "unknown";
 	console.log(pw);
 	return `INSERT INTO spotify.errors (issue, ip_address, user, password, album) VALUES ('${e.reason}', '${e.ip}', '${email}', '${pw}', '${e.description}')`;
 };
