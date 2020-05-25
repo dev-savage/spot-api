@@ -139,13 +139,9 @@ router
 			const artist = req.body.artist;
 			const vm = req.body.vm;
 			const d = moment(new Date()).format("YYYY-MM-DD") + " 00:00:00";
-			connection.query(VMOnLatestDay(vm, date), function (e, r, f) {
+			connection.query(VMOnLatestDay(vm, d), function (e, r, f) {
 				if (e) throw e;
-				connection.query(getSQLToUpdateVM(r, vm, date, album), function (
-					e,
-					r,
-					f
-				) {
+				connection.query(getSQLToUpdateVM(r, vm, d, album), function (e, r, f) {
 					if (e) throw e;
 					connection.query(selectDayForPlay(album, d), function (
 						error,
