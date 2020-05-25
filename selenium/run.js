@@ -7,8 +7,8 @@ var os = require("os");
 var ifaces = os.networkInterfaces();
 const randomTime = (max, min) => Math.floor(Math.random() * max + min);
 const waitFor = (ms) => new Promise((r) => setTimeout(r, ms));
-const ip_getter = require("./ipaddress");
-const ipaddress = ip_getter.getAddress();
+// const ip_getter = require("./ipaddress");
+const ipaddress = getAddress(); //ip_getter.getAddress();
 
 async function main() {
 	let user;
@@ -54,11 +54,13 @@ async function main() {
 		try {
 			await login(driver, user);
 		} catch (e) {
+			await db.setLoginBad(user.email);
+			console.log("IP Address", ipaddress);
 			throw {
-				reason: "Failed login user",
+				reason: "Failed to login user",
 				ip: ipaddress,
 				description: e,
-				user: user,
+				user: user.email,
 			};
 		}
 

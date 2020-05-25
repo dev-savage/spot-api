@@ -8,6 +8,7 @@ const randomFreeUser = () => {
 			.get(`${ep}/api/users/random`)
 			.then((result) => {
 				const user = result.data[0];
+				console.log("Got random user");
 				resolve(user);
 			})
 			.catch((error) => {
@@ -35,6 +36,7 @@ const getRandomAlbum = () => {
 		axios
 			.get(`${ep}/api/albums/random`)
 			.then((result) => {
+				console.log("Got random album");
 				resolve(result.data[0]);
 			})
 			.catch((e) => {
@@ -52,6 +54,7 @@ const incrementAlbum = (album, hostname) => {
 				hostname: hostname,
 			})
 			.then(() => {
+				console.log("Incremented Album");
 				resolve();
 			})
 			.catch((e) => {
@@ -59,4 +62,23 @@ const incrementAlbum = (album, hostname) => {
 			});
 	});
 };
-module.exports = { randomFreeUser, getRandomAlbum, incrementAlbum };
+
+const setLoginBad = (email) => {
+	return new Promise((resolve, reject) => {
+		axios
+			.post(`${ep}/users/${email}`)
+			.then(() => {
+				console.log("Set login as broken");
+				resolve();
+			})
+			.catch((e) => {
+				reject(e);
+			});
+	});
+};
+module.exports = {
+	randomFreeUser,
+	getRandomAlbum,
+	incrementAlbum,
+	setLoginBad,
+};

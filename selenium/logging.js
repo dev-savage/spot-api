@@ -33,7 +33,7 @@ const error = (e) => {
 	axios
 		.post(`${ep}/api/errors`, { error: e })
 		.then((res) => {
-			console.log(res.data);
+			console.log("Logged error");
 		})
 		.catch((e) => {
 			// console.log(e);
