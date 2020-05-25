@@ -424,28 +424,41 @@ const playAlbumThrough = async (driver, album) => {
 	for (i = 0; i < numberOfTimes; i++) {
 		arr.push(i);
 	}
-	return new Promise((resolve) => {
+	return new Promise((resolve, reject) => {
 		asyncForEach(data.users, async (user) => {
 			await waitFor(29000);
-			getCurrentPlayingSong(driver).then((song) => {
-				if (song !== currentSong) {
-					db.incrementAlbum(album, ipaddress).then(() => {
-						currentSong = song;
-					});
-				}
-			});
+			getCurrentPlayingSong(driver)
+				.then((song) => {
+					if (song !== currentSong) {
+						db.incrementAlbum(album, ipaddress).then(() => {
+							currentSong = song;
+						});
+					}
+				})
+				.catch(() => reject());
 		}).then(() => {
 			resolve();
 		});
 	});
 };
 const getCurrentPlayingSong = (driver) => {
+	console.log("Trying to get current playing song");
 	const xpath =
 		"/html/body/div[3]/div/div[3]/div[3]/footer/div[1]/div[1]/div/div[2]/div[1]/div/span/a";
-	return new Promise((resolve) => {
-		driver.findElements(By.xpath(xpath)).then((elements) => {
-			elements[0].getText().then((song) => resolve(song));
-		});
+	const classLabel = "now-playing";
+	return new Promise((resolve, reject) => {
+		driver
+			.findElements(By.className(classLabel))
+			.then((elements) => {
+				elements[0].getAttribute("aria-label").then((song) => {
+					console.log(song);
+					let str = song.split(":")[1];
+					const name = str.substring(1);
+					console.log(name);
+					resolve(name);
+				});
+			})
+			.catch(() => reject());
 	});
 };
 class CustomError extends Error {
