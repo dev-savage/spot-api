@@ -45,7 +45,7 @@ const columns = [
 		sortable: true,
 	},
 	{
-		name: "Url",
+		name: "Album",
 		selector: "album",
 		sortable: true,
 	},
@@ -67,7 +67,7 @@ const Albums = () => {
 				return {
 					vm: vm.vm,
 					time: formatDate(vm.last_play),
-					album: "www.spotify.com",
+					album: vm.album,
 				};
 			});
 			setAlbums(p);
