@@ -14,7 +14,6 @@ router
 	})
 	.post("/", function (req, res, next) {
 		db.pool.getConnection(function (err, connection) {
-			console.log(insertError(req));
 			connection.query(insertError(req), function (error, results, fields) {
 				connection.release();
 				if (error) res.send(error);
@@ -32,7 +31,6 @@ const insertError = (req) => {
 	let pw = e.user.password ? e.user.password : "Unknown";
 	const album = e.album ? e.album : "Not available";
 	const description = e.description ? e.description : "Unknown";
-	console.log(pw);
 	return `INSERT INTO spotify.errors (issue, ip_address, user, password, album, description) VALUES ('${e.reason}', '${e.ip}', '${email}', '${pw}','${album}', '${description}')`;
 };
 

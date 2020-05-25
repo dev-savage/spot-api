@@ -51,7 +51,6 @@ router
 	.post("/brokenlogin", (req, res, next) => {
 		const email = req.body.email;
 		db.pool.getConnection(function (err, connection) {
-			console.log(setLoginBroken(email));
 			connection.query(setLoginBroken(email), (err, results, fields) => {
 				connection.release();
 				if (err) console.log(err);

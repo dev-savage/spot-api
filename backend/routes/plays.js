@@ -143,6 +143,8 @@ router
 				if (e) throw e;
 				connection.query(getSQLToUpdateVM(r, vm, d, album), function (e, r, f) {
 					if (e) throw e;
+					console.log(r);
+					console.log(selectDayForPlay(album, d));
 					connection.query(selectDayForPlay(album, d), function (
 						error,
 						results,
