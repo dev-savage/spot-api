@@ -50,7 +50,7 @@ const incrementAlbum = (album, hostname) => {
 			.post(`${ep}/api/plays`, {
 				album: album.name,
 				artist: album.artist,
-				hostname: hostname,
+				vm: hostname,
 			})
 			.then(() => {
 				// console.log("Incremented Album");
