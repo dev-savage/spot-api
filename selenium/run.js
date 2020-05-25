@@ -267,26 +267,32 @@ const openLoginScreen = (driver) => {
 	});
 };
 const login = async (driver, user) => {
-	await waitFor(randomTime(1000, 500));
-	await driver.findElement(By.className("control-indicator")).click();
-	await waitFor(randomTime(1000, 500));
-	await driver.wait(until.elementLocated(By.id("login-username")));
-	for (let i = 0; i < user.email.length; i++) {
-		await waitFor(randomTime(50, 10));
-		await driver.findElement(By.id("login-username")).sendKeys(user.email[i]);
-	}
-	await waitFor(randomTime(200, 100));
-	for (let i = 0; i < user.password.length; i++) {
-		await waitFor(randomTime(50, 10));
-		await driver
-			.findElement(By.id("login-password"))
-			.sendKeys(user.password[i]);
-	}
-	await waitFor(randomTime(1500, 1000));
-	await driver.findElement(By.id("login-button")).click();
-	await waitFor(randomTime(2000, 1000));
-	const error = await driver.findElements(By.className("alert-warning"));
-	if (error.length > 0) throw "bad login";
+	return new Promise( (resolve, reject) =>{
+		await waitFor(randomTime(1000, 500));
+		await driver.findElement(By.className("control-indicator")).click();
+		await waitFor(randomTime(1000, 500));
+		await driver.wait(until.elementLocated(By.id("login-username")));
+		for (let i = 0; i < user.email.length; i++) {
+			await waitFor(randomTime(50, 10));
+			await driver.findElement(By.id("login-username")).sendKeys(user.email[i]);
+		}
+		await waitFor(randomTime(200, 100));
+		for (let i = 0; i < user.password.length; i++) {
+			await waitFor(randomTime(50, 10));
+			await driver
+				.findElement(By.id("login-password"))
+				.sendKeys(user.password[i]);
+		}
+		await waitFor(randomTime(1500, 1000));
+		await driver.findElement(By.id("login-button")).click();
+		await waitFor(randomTime(2000, 1000));
+		const error = await driver.findElements(By.className("alert-warning"));
+		if (error.length > 0){
+			reject('bad login')
+		} else{
+			resolve();
+		}
+	});
 };
 const getTime = () => {
 	let log = new Date();
