@@ -30,6 +30,7 @@ const logout = (user) => {
 };
 
 const error = (e) => {
+	console.log(`${ep}/api/errors`);
 	axios
 		.post(`${ep}/api/errors`, { error: e })
 		.then((res) => {
