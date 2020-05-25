@@ -345,17 +345,6 @@ const getArtist = (driver) => {
 };
 
 const playAlbum = (driver) => {
-	// const playClass = "_11f5fc88e3dec7bfec55f7f49d581d78-scss";
-	// return new Promise(resolve => {
-	//   driver.wait(until.elementLocated(By.className(playClass))).then(() => {
-	//     driver
-	//       .findElements(By.className(playClass))
-	//       .then(elements => {
-	//         elements[1].click();
-	//       })
-	//       .then(() => resolve());
-	//   });
-	// });
 	return new Promise((resolve) => {
 		driver
 			.wait(
@@ -366,6 +355,7 @@ const playAlbum = (driver) => {
 				)
 			)
 			.then(() => {
+				console.log("Play Button Found");
 				driver
 					.findElement(
 						By.xpath(
@@ -374,7 +364,11 @@ const playAlbum = (driver) => {
 					)
 					.click();
 			})
-			.then(() => resolve());
+			.then(() => {
+				console.log("Play Button Clicked");
+				resolve();
+			})
+			.catch(() => reject());
 	});
 };
 const ensureShuffleOn = (driver) => {
