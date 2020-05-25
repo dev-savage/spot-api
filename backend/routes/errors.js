@@ -13,9 +13,10 @@ router
 		});
 	})
 	.post("/", function (req, res, next) {
-		res.send("made post");
 		db.pool.getConnection(function (err, connection) {
 			console.log(insertError(req));
+			console.log(req.body);
+			console.log(req.body.error);
 			connection.query(insertError(req), function (error, results, fields) {
 				connection.release();
 				if (error) res.send(error);

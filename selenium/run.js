@@ -85,7 +85,7 @@ async function main() {
 				reason: "Failed to login user",
 				ip: ipaddress,
 				description: e,
-				user: user.email,
+				user: user,
 			};
 		}
 
