@@ -8,6 +8,30 @@ var ifaces = os.networkInterfaces();
 const randomTime = (max, min) => Math.floor(Math.random() * max + min);
 const waitFor = (ms) => new Promise((r) => setTimeout(r, ms));
 // const ip_getter = require("./ipaddress");
+const getAddress = () => {
+	let arr = [];
+	Object.keys(ifaces).forEach(function (ifname) {
+		var alias = 0;
+
+		ifaces[ifname].forEach(function (iface) {
+			if ("IPv4" !== iface.family || iface.internal !== false) {
+				// skip over internal (i.e. 127.0.0.1) and non-ipv4 addresses
+				return;
+			}
+			if (alias >= 1) {
+				// this single interface has multiple ipv4 addresses
+				arr.push(iface.address);
+				return iface.address;
+			} else {
+				// this interface has only one ipv4 adress
+				arr.push(iface.address);
+				return iface.address;
+			}
+			++alias;
+		});
+	});
+	return arr[0];
+};
 const ipaddress = getAddress(); //ip_getter.getAddress();
 
 async function main() {
@@ -429,30 +453,5 @@ class CustomError extends Error {
 		this.date = getTime();
 	}
 }
-
-const getAddress = () => {
-	let arr = [];
-	Object.keys(ifaces).forEach(function (ifname) {
-		var alias = 0;
-
-		ifaces[ifname].forEach(function (iface) {
-			if ("IPv4" !== iface.family || iface.internal !== false) {
-				// skip over internal (i.e. 127.0.0.1) and non-ipv4 addresses
-				return;
-			}
-			if (alias >= 1) {
-				// this single interface has multiple ipv4 addresses
-				arr.push(iface.address);
-				return iface.address;
-			} else {
-				// this interface has only one ipv4 adress
-				arr.push(iface.address);
-				return iface.address;
-			}
-			++alias;
-		});
-	});
-	return arr[0];
-};
 
 module.exports = { start, main };
