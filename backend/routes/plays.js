@@ -113,7 +113,6 @@ const query = (connection, sql) => {
 	return new Promise((resolve, reject) => {
 		connection.query(sql, function (err, res, f) {
 			connection.release();
-			console.log(res);
 			if (err) reject(err);
 			resolve(res);
 		});

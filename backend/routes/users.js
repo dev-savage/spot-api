@@ -54,6 +54,7 @@ router
 			console.log(setLoginBroken(email));
 			connection.query(setLoginBroken(email), (err, results, fields) => {
 				connection.release();
+				if (err) console.log(err);
 				if (err) {
 					res.send("Couldn't set login broke");
 				} else {
