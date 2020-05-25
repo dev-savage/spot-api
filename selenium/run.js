@@ -391,12 +391,15 @@ const ensureShuffleOn = (driver) => {
 };
 const goToNextTrack = (driver) => {
 	const nextTrackPath =
-		"/html/body/div[3]/div/div[3]/div[3]/footer/div/div[2]/div/div[1]/div[4]/button";
+		"/html/body/div[3]/div/div[3]/div[3]/footer/div[2]/div[2]/div/div[1]/div[4]/button";
 	return new Promise((resolve) => {
-		driver.findElement(By.xpath(nextTrackPath)).then((element) => {
-			element.click();
-			resolve();
-		});
+		driver
+			.findElement(By.xpath(nextTrackPath))
+			.then((element) => {
+				element.click();
+				resolve();
+			})
+			.catch(() => reject());
 	});
 };
 
