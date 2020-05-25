@@ -15,8 +15,6 @@ router
 	.post("/", function (req, res, next) {
 		db.pool.getConnection(function (err, connection) {
 			console.log(insertError(req));
-			console.log(req.body);
-			console.log(req.body.error);
 			connection.query(insertError(req), function (error, results, fields) {
 				connection.release();
 				if (error) res.send(error);
@@ -29,14 +27,13 @@ const selectErrors = () => {
 	return "select * from errors";
 };
 const insertError = (req) => {
-	console.log(req.body);
 	let e = req.body.error;
-	console.log(e);
-	let email = e.email ? e.email : "unknown";
-	console.log(email);
-	let pw = "unknown";
+	let email = e.user.email ? e.user.email : "Unknown";
+	let pw = e.user.password ? e.user.password : "Unknown";
+	const album = e.album ? e.album : "Not available";
+	const description = e.description ? e.description : "Unknown";
 	console.log(pw);
-	return `INSERT INTO spotify.errors (issue, ip_address, user, password, album) VALUES ('${e.reason}', '${e.ip}', '${email}', '${pw}', '${e.description}')`;
+	return `INSERT INTO spotify.errors (issue, ip_address, user, password, album, description) VALUES ('${e.reason}', '${e.ip}', '${email}', '${pw}',${album} '${description}')`;
 };
 
 module.exports = router;

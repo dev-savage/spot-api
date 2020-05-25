@@ -90,6 +90,7 @@ const Albums = () => {
 									columns={columns}
 									data={albums}
 									defaultSortField="time"
+									defaultSortAsc={false}
 									pagination={true}
 									pointerOnHover={true}
 									dense={true}

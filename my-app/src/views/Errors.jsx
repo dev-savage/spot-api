@@ -70,10 +70,27 @@ const Albums = () => {
 	const [count, setCount] = useState(0);
 	const [errors, setErrors] = useState(null);
 
+	const formatDate = (newDate) => {
+		let date = newDate.split("T")[0];
+		let time = newDate.split("T")[1];
+		let seconds = time.split(".")[0];
+		return date + " @ " + seconds;
+	};
+
 	useEffect(() => {
 		axios.get("http://77.68.118.54/api/errors").then((res) => {
 			console.log(res.data);
-			setErrors(res.data);
+			let e = res.data.map((er) => {
+				return {
+					issue: er.issue,
+					ip_address: er.ip_address,
+					time: formatDate(er.time),
+					user: er.user,
+					album: er.album,
+					description: er.description,
+				};
+			});
+			setErrors(e);
 		});
 	}, [count]);
 
@@ -91,7 +108,8 @@ const Albums = () => {
 									title=""
 									columns={columns}
 									data={errors}
-									defaultSortField="id"
+									defaultSortField="time"
+									defaultSortAsc={false}
 									selectableRows={false}
 									// selected={handleSelect}
 									pagination={true}
