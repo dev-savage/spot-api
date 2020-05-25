@@ -267,7 +267,7 @@ const openLoginScreen = (driver) => {
 	});
 };
 const login = async (driver, user) => {
-	return new Promise( (resolve, reject) =>{
+	return new Promise(async (resolve, reject) => {
 		await waitFor(randomTime(1000, 500));
 		await driver.findElement(By.className("control-indicator")).click();
 		await waitFor(randomTime(1000, 500));
@@ -287,9 +287,9 @@ const login = async (driver, user) => {
 		await driver.findElement(By.id("login-button")).click();
 		await waitFor(randomTime(2000, 1000));
 		const error = await driver.findElements(By.className("alert-warning"));
-		if (error.length > 0){
-			reject('bad login')
-		} else{
+		if (error.length > 0) {
+			reject("bad login");
+		} else {
 			resolve();
 		}
 	});
