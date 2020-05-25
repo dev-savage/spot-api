@@ -66,6 +66,7 @@ async function main() {
 
 		try {
 			await openLoginScreen(driver);
+			console.log("Clicked Login Button");
 			await waitFor(randomTime(5500, 2500));
 		} catch (e) {
 			throw {
@@ -261,7 +262,6 @@ const openLoginScreen = (driver) => {
 					.click();
 			})
 			.then(() => {
-				console.log("Clicked Login Button");
 				resolve();
 			});
 	});
@@ -286,8 +286,7 @@ const login = async (driver, user) => {
 	await driver.findElement(By.id("login-button")).click();
 	await waitFor(randomTime(2000, 1000));
 	const error = await driver.findElements(By.className("alert-warning"));
-	if (error.length > 0)
-		throw new CustomError("Couldn't login, bad username/password", 404);
+	if (error.length > 0) throw "bad login";
 };
 const getTime = () => {
 	let log = new Date();

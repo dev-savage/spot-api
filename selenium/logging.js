@@ -36,7 +36,7 @@ const error = (e) => {
 			console.log("Logged error");
 		})
 		.catch((e) => {
-			// console.log(e);
+			console.log(e);
 			console.log("error logging error");
 		});
 };
