@@ -87,7 +87,7 @@ const Albums = () => {
 					time: formatDate(er.time),
 					user: er.user,
 					album: er.album,
-					description: er.description,
+					description: "pending",
 				};
 			});
 			setErrors(e);
