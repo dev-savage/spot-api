@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import DataTable, { createTheme } from "react-data-table-component";
 import { Card, CardHeader, CardBody, CardTitle, Row } from "reactstrap";
 import fontawesome from "@fortawesome/fontawesome";
@@ -73,7 +73,20 @@ const Albums = () => {
 			setAlbums(p);
 			console.log(data.data);
 		});
-	}, [count]);
+	}, []);
+	useInterval(() => {
+		axios.get("http://77.68.118.54/api/virtualmachines/").then((data) => {
+			let p = data.data.map((vm) => {
+				return {
+					vm: vm.vm,
+					time: formatDate(vm.last_play),
+					album: vm.album,
+				};
+			});
+			setAlbums(p);
+			console.log(data.data);
+		});
+	}, 10000);
 
 	return (
 		<div className="content">
@@ -110,4 +123,23 @@ const Albums = () => {
 	);
 };
 
+function useInterval(callback, delay) {
+	const savedCallback = useRef();
+
+	// Remember the latest function.
+	useEffect(() => {
+		savedCallback.current = callback;
+	}, [callback]);
+
+	// Set up the interval.
+	useEffect(() => {
+		function tick() {
+			savedCallback.current();
+		}
+		if (delay !== null) {
+			let id = setInterval(tick, delay);
+			return () => clearInterval(id);
+		}
+	}, [delay]);
+}
 export default Albums;

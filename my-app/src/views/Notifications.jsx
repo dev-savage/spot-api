@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import LiveFeed from "../components/LiveFeed";
 import { Card, CardHeader, CardBody, Row, Col } from "reactstrap";
 import "../css/Card.css";
@@ -140,6 +140,31 @@ const Today = (props) => {
 			})
 			.catch((error) => {});
 	}, []);
+	useInterval(() => {
+		const ep = "http://77.68.118.54/api";
+		axios
+			.get(`${ep}/plays/today`)
+			.then((result) => {
+				setData(result.data[0].total);
+				axios
+					.get(`${ep}/plays/yesterday`)
+					.then((r) => {
+						let t = r.data[0].total;
+						let diff = t - result.data[0].total;
+						if (diff < 0) {
+							setPositive(false);
+						} else {
+							setPositive(true);
+						}
+						let frac = diff / result.data[0].total;
+						let p = frac * 100;
+						let q = p.toFixed(1);
+						setYesterday(q);
+					})
+					.catch((error) => {});
+			})
+			.catch((error) => {});
+	}, 10000);
 	return (
 		<CC {...rest} className={clsx(classes.root, className)}>
 			<CardContent>
@@ -204,6 +229,32 @@ const Month = (props) => {
 			})
 			.catch((error) => {});
 	}, []);
+
+	useInterval(() => {
+		const ep = "http://77.68.118.54/api";
+		axios
+			.get(`${ep}/plays/thismonth`)
+			.then((result) => {
+				setData(result.data[0].total);
+				axios
+					.get(`${ep}/plays/lastmonth`)
+					.then((r) => {
+						let t = r.data[0].total;
+						let diff = t - result.data[0].total;
+						if (diff < 0) {
+							setPositive(false);
+						} else {
+							setPositive(true);
+						}
+						let frac = diff / result.data[0].total;
+						let p = frac * 100;
+						let q = p.toFixed(1);
+						setYesterday(q);
+					})
+					.catch((error) => {});
+			})
+			.catch((error) => {});
+	}, 10000);
 	return (
 		<CC {...rest} className={clsx(classes.root, className)}>
 			<CardContent>
@@ -270,6 +321,33 @@ const Money = (props) => {
 			})
 			.catch((error) => {});
 	}, []);
+	useInterval(() => {
+		const ep = "http://77.68.118.54/api";
+		axios
+			.get(`${ep}/plays/thismonth`)
+			.then((result) => {
+				let f = result.data[0].total * 0.0032;
+				let g = f.toFixed(2);
+				setData(g);
+				axios
+					.get(`${ep}/plays/lastmonth`)
+					.then((r) => {
+						let t = r.data[0].total;
+						let diff = t - result.data[0].total;
+						if (diff < 0) {
+							setPositive(false);
+						} else {
+							setPositive(true);
+						}
+						let frac = diff / result.data[0].total;
+						let p = frac * 100;
+						let q = p.toFixed(1);
+						setYesterday(q);
+					})
+					.catch((error) => {});
+			})
+			.catch((error) => {});
+	}, 10000);
 	return (
 		<CC {...rest} className={clsx(classes.root, className)}>
 			<CardContent>
@@ -301,4 +379,24 @@ const Money = (props) => {
 		</CC>
 	);
 };
+
+function useInterval(callback, delay) {
+	const savedCallback = useRef();
+
+	// Remember the latest function.
+	useEffect(() => {
+		savedCallback.current = callback;
+	}, [callback]);
+
+	// Set up the interval.
+	useEffect(() => {
+		function tick() {
+			savedCallback.current();
+		}
+		if (delay !== null) {
+			let id = setInterval(tick, delay);
+			return () => clearInterval(id);
+		}
+	}, [delay]);
+}
 export default Notifications;
