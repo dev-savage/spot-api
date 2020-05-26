@@ -346,7 +346,7 @@ const getArtist = (driver) => {
 };
 
 const playAlbum = (driver) => {
-	return new Promise((resolve) => {
+	return new Promise((resolve, reject) => {
 		driver
 			.wait(
 				until.elementLocated(
