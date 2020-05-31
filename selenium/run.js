@@ -344,7 +344,7 @@ const openLoginScreen = (driver) => {
 };
 const login = async (driver, user) => {
 	return new Promise(async (resolve, reject) => {
-		await waitFor(randomTime(1000, 500));
+		await waitFor(randomTime(2000, 1500));
 		await driver.findElement(By.className("control-indicator")).click();
 		await waitFor(randomTime(1000, 500));
 		await driver.wait(until.elementLocated(By.id("login-username")));
