@@ -37,14 +37,14 @@ const ipaddress = getAddress(); //ip_getter.getAddress();
 async function main() {
 	let user;
 	try {
-		// user = await db.randomFreeUser();
-		user = {
-			idusers: 1,
-			email: "super_k_dog@yahoo.com",
-			password: "freeshit",
-			loginworking: 1,
-			currentlyloggedin: 0,
-		};
+		user = await db.randomFreeUser();
+		// user = {
+		// 	idusers: 1,
+		// 	email: "super_k_dog@yahoo.com",
+		// 	password: "freeshit",
+		// 	loginworking: 1,
+		// 	currentlyloggedin: 0,
+		// };
 	} catch (e) {
 		// console.log("failed to get user");
 	}
