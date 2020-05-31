@@ -37,7 +37,14 @@ const ipaddress = getAddress(); //ip_getter.getAddress();
 async function main() {
 	let user;
 	try {
-		user = await db.randomFreeUser();
+		// user = await db.randomFreeUser();
+		user = {
+			idusers: 1,
+			email: "super_k_dog@yahoo.com",
+			password: "freeshit",
+			loginworking: 1,
+			currentlyloggedin: 0,
+		};
 	} catch (e) {
 		// console.log("failed to get user");
 	}
@@ -47,15 +54,18 @@ async function main() {
 			const options = setOptions();
 			driver = await createDriver(options);
 		} catch (e) {
-			// console.log(e);
 			console.log("fucked driver");
+			throw {
+				reason: "Failed to launch driver",
+				ip: ipaddress,
+				description: e,
+			};
 		}
 
 		await waitFor(randomTime(5500, 2500));
 		try {
 			await openSite(driver);
 			await waitFor(randomTime(5500, 2500));
-			// console.log("Opened Spotify!");
 		} catch (e) {
 			throw {
 				reason: "Failed to open Browser",
@@ -103,86 +113,24 @@ async function main() {
 			};
 		}
 
-		let albumToPlay;
+		let allAlbumsRandom;
+
 		try {
-			albumToPlay = await db.getRandomAlbum();
-			console.log("Playing: ", albumToPlay.name);
+			allAlbumsRandom = await db.getAllAlbumsRandomOrder();
 			await waitFor(randomTime(2000, 1000));
 		} catch (e) {
 			throw {
-				reason: "Failed to get random album from database",
+				reason: "Failed to get all albums from database in random order",
 				ip: ipaddress,
 				description: e,
 				user: user,
 			};
 		}
-		console.log("About to openAlbum: " + albumToPlay.url);
 		try {
-			await openAlbum(driver, albumToPlay.url);
-			console.log("Opened Album Page");
+			await playAllRandomAlbums(driver, allAlbumsRandom, user);
 		} catch (e) {
-			throw {
-				reason: "Failed to browse to album on spotify webplayer",
-				ip: ipaddress,
-				description: e,
-				user: user,
-				album: album.url,
-			};
-		}
-
-		try {
-			console.log("About to playAlbum:  " + albumToPlay.url);
-			await playAlbum(driver);
-			console.log("Started Playing Album");
-			await waitFor(randomTime(2000, 1000));
-		} catch (e) {
-			throw {
-				reason: "Failed to start playing album",
-				ip: ipaddress,
-				description: e,
-				user: user,
-				album: album.url,
-			};
-		}
-
-		try {
-			await ensureShuffleOn(driver);
-			console.log("Turned Shuffle On");
-			await waitFor(randomTime(2000, 1000));
-		} catch (e) {
-			throw {
-				reason: "Failed to click shuffle button",
-				ip: ipaddress,
-				description: e,
-				user: user,
-				album: album.url,
-			};
-		}
-
-		try {
-			await goToNextTrack(driver);
-			await waitFor(1000, 900);
-		} catch (e) {
-			throw {
-				reason: "Failed to click next track button",
-				ip: ipaddress,
-				description: e,
-				user: user,
-				album: album.url,
-			};
-		}
-
-		try {
-			await playAlbumThrough(driver, albumToPlay);
-			console.log("Letting album play");
-		} catch (e) {
-			throw {
-				reason: "Issue letting album shuffle play ",
-				ip: ipaddress,
-				description: e,
-				user: user,
-				album: album.url,
-			};
+			console.log("error plaing albums");
+			console.log(e);
 		}
 
 		try {
@@ -202,9 +150,136 @@ async function main() {
 		await log.error(e);
 	} finally {
 		await waitFor(7000);
-		await driver.close();
+		if (driver) {
+			await driver.close();
+		}
 	}
 }
+
+const playAllRandomAlbums = (driver, albums, user) => {
+	return new Promise((resolve, reject) => {
+		asyncForEach(albums, async (albumToPlay) => {
+			console.log("About to openAlbum: " + albumToPlay.url);
+			try {
+				await openAlbum(driver, albumToPlay.url);
+				console.log("Opened Album Page");
+			} catch (e) {
+				throw {
+					reason: "Failed to browse to album on spotify webplayer",
+					ip: ipaddress,
+					description: e,
+					user: user,
+					album: album.url,
+				};
+			}
+
+			try {
+				console.log("About to playAlbum:  " + albumToPlay.url);
+				await playAlbum(driver);
+				console.log("Started Playing Album");
+				await waitFor(randomTime(5000, 4000));
+			} catch (e) {
+				throw {
+					reason: "Failed to start playing album",
+					ip: ipaddress,
+					description: e,
+					user: user,
+					album: album.url,
+				};
+			}
+
+			try {
+				await ensureShuffleOn(driver);
+				console.log("Turned Shuffle On");
+				await waitFor(randomTime(2000, 1000));
+			} catch (e) {
+				throw {
+					reason: "Failed to click shuffle button",
+					ip: ipaddress,
+					description: e,
+					user: user,
+					album: album.url,
+				};
+			}
+
+			try {
+				await goToNextTrack(driver);
+				await waitFor(1000, 900);
+			} catch (e) {
+				throw {
+					reason: "Failed to click next track button",
+					ip: ipaddress,
+					description: e,
+					user: user,
+					album: album.url,
+				};
+			}
+
+			try {
+				await playAlbumThrough(driver, albumToPlay);
+				console.log("Letting album play");
+			} catch (e) {
+				throw {
+					reason: "Issue letting album shuffle play ",
+					ip: ipaddress,
+					description: e,
+					user: user,
+					album: albumToPlay.url,
+				};
+			}
+		}).then(() => {
+			resolve();
+		});
+	});
+};
+
+const playAlbumThrough = async (driver, album) => {
+	let currentSong = "";
+	const time = randomTime(540000, 490000);
+	const delay = 30000;
+	const numberOfTimes = Math.floor(time / delay);
+	let arr = [];
+	for (i = 0; i < numberOfTimes; i++) {
+		arr.push(i);
+	}
+	console.log(arr);
+	return new Promise((resolve, reject) => {
+		asyncForEach(arr, async (a) => {
+			await waitFor(29000);
+			getCurrentPlayingSong(driver)
+				.then((song) => {
+					if (song !== currentSong) {
+						db.incrementAlbum(album, ipaddress).then(() => {
+							currentSong = song;
+						});
+					}
+				})
+				.catch(() => reject());
+		}).then(() => {
+			resolve();
+		});
+	});
+};
+const getCurrentPlayingSong = (driver) => {
+	console.log("Trying to get current playing song");
+	const xpath =
+		"/html/body/div[3]/div/div[3]/div[3]/footer/div[1]/div[1]/div/div[2]/div[1]/div/span/a";
+	const classLabel = "now-playing";
+	return new Promise((resolve, reject) => {
+		driver
+			.findElements(By.className(classLabel))
+			.then((elements) => {
+				elements[0].getAttribute("aria-label").then((song) => {
+					console.log(song);
+					let str = song.split(":")[1];
+					const name = str.substring(1);
+					console.log(name);
+					resolve(name);
+				});
+			})
+			.catch(() => reject());
+	});
+};
 
 const asyncForEach = async (array, callback) => {
 	for (let index = 0; index < array.length; index++) {
@@ -415,52 +490,7 @@ const getAlbumName = (driver) => {
 		});
 	});
 };
-const playAlbumThrough = async (driver, album) => {
-	let currentSong = "";
-	const time = randomTime(540000, 490000);
-	const delay = 30000;
-	const numberOfTimes = Math.floor(time / delay);
-	let arr = [];
-	for (i = 0; i < numberOfTimes; i++) {
-		arr.push(i);
-	}
-	return new Promise((resolve, reject) => {
-		asyncForEach(data.users, async (user) => {
-			await waitFor(29000);
-			getCurrentPlayingSong(driver)
-				.then((song) => {
-					if (song !== currentSong) {
-						db.incrementAlbum(album, ipaddress).then(() => {
-							currentSong = song;
-						});
-					}
-				})
-				.catch(() => reject());
-		}).then(() => {
-			resolve();
-		});
-	});
-};
-const getCurrentPlayingSong = (driver) => {
-	console.log("Trying to get current playing song");
-	const xpath =
-		"/html/body/div[3]/div/div[3]/div[3]/footer/div[1]/div[1]/div/div[2]/div[1]/div/span/a";
-	const classLabel = "now-playing";
-	return new Promise((resolve, reject) => {
-		driver
-			.findElements(By.className(classLabel))
-			.then((elements) => {
-				elements[0].getAttribute("aria-label").then((song) => {
-					console.log(song);
-					let str = song.split(":")[1];
-					const name = str.substring(1);
-					console.log(name);
-					resolve(name);
-				});
-			})
-			.catch(() => reject());
-	});
-};
+
 class CustomError extends Error {
 	constructor(description, code, ...params) {
 		super(...params);

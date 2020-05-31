@@ -27,8 +27,8 @@ const selectErrors = () => {
 };
 const insertError = (req) => {
 	let e = req.body.error;
-	let email = e.user.email ? e.user.email : "Unknown";
-	let pw = e.user.password ? e.user.password : "Unknown";
+	let email = e.user != undefined ? e.user.email : "Unknown";
+	let pw = e.user != undefined ? e.user.password : "Unknown";
 	const album = e.album ? e.album : "Not available";
 	const description = e.description ? e.description : "Unknown";
 	return `INSERT INTO spotify.errors (issue, ip_address, user, password, album, description) VALUES ('${e.reason}', '${e.ip}', '${email}', '${pw}','${album}', '${description}')`;

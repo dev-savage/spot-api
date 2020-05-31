@@ -38,6 +38,17 @@ router.get("/random", (req, res, next) => {
 		});
 	});
 });
+
+router.get("/randomall", (req, res, next) => {
+	db.pool.getConnection(function (err, connection) {
+		connection.query(selectAllRandomOrder(), function (error, results, fields) {
+			connection.release();
+			if (err) console.log(err);
+			res.send(results);
+		});
+	});
+});
+
 router
 	.get("/:name", (req, res, next) => {
 		db.pool.getConnection(function (err, connection) {
@@ -82,6 +93,10 @@ const deleteAlbum = (req) => {
 
 const selectRandom = () => {
 	return "select * from spotify.albums order by rand() limit 1";
+};
+
+const selectAllRandomOrder = () => {
+	return "select * from spotify.albums order by rand()";
 };
 
 module.exports = router;

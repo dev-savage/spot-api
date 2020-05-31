@@ -44,6 +44,20 @@ const getRandomAlbum = () => {
 	});
 };
 
+const getAllAlbumsRandomOrder = () => {
+	return new Promise((resolve, reject) => {
+		axios
+			.get(`${ep}/api/albums/randomall`)
+			.then((result) => {
+				// console.log("Got random album");
+				resolve(result.data);
+			})
+			.catch((e) => {
+				reject(e);
+			});
+	});
+};
+
 const incrementAlbum = (album, hostname) => {
 	return new Promise((resolve, reject) => {
 		axios
@@ -80,6 +94,7 @@ const setLoginBad = (email) => {
 module.exports = {
 	randomFreeUser,
 	getRandomAlbum,
+	getAllAlbumsRandomOrder,
 	incrementAlbum,
 	setLoginBad,
 };
