@@ -12,6 +12,7 @@ var logins = require("./routes/logins");
 var plays = require("./routes/plays");
 var virtualmachines = require("./routes/virtualmachines");
 var errors = require("./routes/errors");
+const premium = require("./routes/premium");
 var app = express();
 app.use(cors());
 // view engine setup
@@ -37,6 +38,7 @@ app.use("/api/logins", logins);
 app.use("/api/plays", plays);
 app.use("/api/virtualmachines", virtualmachines);
 app.use("/api/errors", errors);
+api.use("/api/premium", premium);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
