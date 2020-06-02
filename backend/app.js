@@ -38,7 +38,7 @@ app.use("/api/logins", logins);
 app.use("/api/plays", plays);
 app.use("/api/virtualmachines", virtualmachines);
 app.use("/api/errors", errors);
-api.use("/api/premium", premium);
+app.use("/api/premium", premium);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
